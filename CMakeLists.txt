@@ -42,5 +42,5 @@ add_executable(opencv_cam_server cameraServer.cpp)
 add_executable(opencv_cam_client cameraClient.cpp)
 
 # Link your application with OpenCV libraries
-target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} /usr/local/lib/arm-linux-gnueabihf/libuvc.so))
+target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} /usr/local/lib/arm-linux-gnueabihf/libuvc.so)
 target_link_libraries(opencv_cam_client ${OpenCV_LIBS})

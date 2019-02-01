@@ -12,14 +12,13 @@
 #pragma clang diagnostic ignored "-Wdocumentation"
 
 
-#include "imgcodecs.hpp"
-#include "imgproc.hpp"
-#include "videoio.hpp"
-#include "highgui.hpp"
-#include "video.hpp"
+#include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
+#include "opencv2/highgui.hpp"
+#include "opencv2/videoio.hpp"
 
 #include <iostream>
-#include "libuvc.h"
+#include "libuvc/libuvc.h"
 #include <stdio.h>
 #include <unistd.h>
 

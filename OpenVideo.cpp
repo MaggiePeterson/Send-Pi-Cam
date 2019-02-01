@@ -117,6 +117,7 @@ void OpenVideo::ChangeExposure(void) {
     /* Close the UVC context. This closes and cleans up any existing device handles,
      * and it closes the libusb context if one was not provided. */
     uvc_exit(ctx);
+    sleep(3);
     puts("UVC exited");
 }
 

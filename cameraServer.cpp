@@ -47,7 +47,7 @@ int main()
     Size tBoxBorderSize;
 
     //opencv data vars
-    VideoCapture capture; //camera feed
+ //   VideoCapture capture; //camera feed
     Mat currImg,          //output Image    
         textForground,    //text color layer
         textAlpha,        //text draw layer
@@ -108,7 +108,13 @@ int main()
 
             
             //grab image from camera
-            currImg = myVideo.getImage();
+             Mat src1 = myVideo.getImage();
+            Mat gray, edge, draw;
+            cvtColor(src1, gray, CV_BGR2GRAY);
+            Canny( gray, edge, 50, 150, 3);
+            edge.convertTo(draw, CV_8U);
+            
+            currImg = draw;
             if(currImg.empty())
                 break;
 

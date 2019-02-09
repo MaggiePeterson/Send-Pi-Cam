@@ -116,7 +116,7 @@ int main()
             
            // rawImg = myVideo.getImage();
           //  currImg = returnEdges(rawImg);
-            currImg = myVideo.getImage(); 
+            currImg = returnEdge(myVideo.getImage()); 
             
             
             if(currImg.empty())

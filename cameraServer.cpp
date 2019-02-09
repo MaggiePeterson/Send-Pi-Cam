@@ -20,6 +20,15 @@
 using namespace cv;
 using namespace std;
 
+Mat returnEdges(Mat img){
+    Mat gray, edge, draw;
+    cvtColor(img, gray, CV_BGR2GRAY);
+    Canny( gray, edge, 50, 150, 3);
+    edge.convertTo(draw, CV_8UC3);
+    
+    return draw;
+}
+
 int main()
 {
     //tcp settings
@@ -28,7 +37,8 @@ int main()
     int opt = 1; 
     int addrlen = sizeof(address); 
     char buffer[BUFFER_SIZE] = {0}; 
-    const char *hello = "Hello from server"; 
+    const char *hello = "Hello from server";
+    Mat rawImg;
 
     //text settings
     string text = "Test String";
@@ -52,9 +62,6 @@ int main()
         textForground,    //text color layer
         textAlpha,        //text draw layer
         image_roi;        //roi of output image
-
-
-
 
      // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
@@ -105,16 +112,13 @@ int main()
             text =   "Proc time: "+ to_string((float)(currTime - startTime) /CLOCKS_PER_SEC) + " FPS: " + to_string((float)(1000.0/ ms));
             lastFrameTime = currFrameTime;
 
-
-            
             //grab image from camera
-             Mat src1 = myVideo.getImage();
-            Mat gray, edge, draw;
-            cvtColor(src1, gray, CV_BGR2GRAY);
-            Canny( gray, edge, 50, 150, 3);
-            edge.convertTo(draw, CV_8U);
             
-            currImg = draw;
+           // rawImg = myVideo.getImage();
+          //  currImg = returnEdges(rawImg);
+            currImg = myVideo.getImage(); 
+            
+            
             if(currImg.empty())
                 break;
 
@@ -145,6 +149,8 @@ int main()
             currTime = clock();
 
         }
+    
+        
     
 
     return 0;

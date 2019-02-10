@@ -38,6 +38,10 @@ void OpenVideo::cb(uvc_frame_t *frame, void *ptr) {
 
 OpenVideo::OpenVideo(int camNum){
     this->webCamIndex = camNum;
+<<<<<<< HEAD
+=======
+//    this->ChangeExposure();
+>>>>>>> 7276cae7734fc3d4316d4408b1c8d13926c15424
     this->capture = new VideoCapture(this->webCamIndex); //CAUSES ERROR
    
 }
@@ -51,6 +55,12 @@ OpenVideo::setAutoExposure(){
     }
 }
 
+<<<<<<< HEAD
+=======
+void OpenVideo::setAutoExposure(){
+    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0);
+}
+>>>>>>> 7276cae7734fc3d4316d4408b1c8d13926c15424
 void OpenVideo::ChangeExposure(void) {
     uvc_context_t *ctx;
     uvc_device_t *dev;

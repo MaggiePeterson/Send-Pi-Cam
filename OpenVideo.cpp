@@ -38,8 +38,12 @@ void OpenVideo::cb(uvc_frame_t *frame, void *ptr) {
 
 OpenVideo::OpenVideo(int camNum){
     this->webCamIndex = camNum;
-    this->ChangeExposure();
     this->capture = new VideoCapture(this->webCamIndex); //CAUSES ERROR
+   
+}
+
+OpenVideo::setAutoExposure(){
+    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0);
     if(!this->capture->isOpened()){
         //error in opening the video input
         cerr << "Unable to open video file: " << webCamIndex << endl;
@@ -47,9 +51,6 @@ OpenVideo::OpenVideo(int camNum){
     }
 }
 
-void OpenVideo::setAutoExposure(){
-    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0)
-}
 void OpenVideo::ChangeExposure(void) {
     uvc_context_t *ctx;
     uvc_device_t *dev;
@@ -123,6 +124,12 @@ void OpenVideo::ChangeExposure(void) {
     uvc_exit(ctx);
     sleep(3);
     puts("UVC exited");
+    
+    if(!this->capture->isOpened()){
+        //error in opening the video input
+        cerr << "Unable to open video file: " << webCamIndex << endl;
+        exit(EXIT_FAILURE);
+    }
 }
 
 Mat OpenVideo::getImage(){

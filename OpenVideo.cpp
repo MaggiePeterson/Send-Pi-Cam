@@ -38,7 +38,7 @@ void OpenVideo::cb(uvc_frame_t *frame, void *ptr) {
 
 OpenVideo::OpenVideo(int camNum){
     this->webCamIndex = camNum;
-    this->ChangeExposure();
+//    this->ChangeExposure();
     this->capture = new VideoCapture(this->webCamIndex); //CAUSES ERROR
     if(!this->capture->isOpened()){
         //error in opening the video input
@@ -48,7 +48,7 @@ OpenVideo::OpenVideo(int camNum){
 }
 
 void OpenVideo::setAutoExposure(){
-    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0)
+    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0);
 }
 void OpenVideo::ChangeExposure(void) {
     uvc_context_t *ctx;

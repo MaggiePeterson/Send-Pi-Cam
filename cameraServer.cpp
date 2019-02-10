@@ -20,13 +20,14 @@
 using namespace cv;
 using namespace std;
 
+//TODO - SEND AS COUNTOURS 
 Mat returnEdges(Mat img){
     Mat gray, edge, draw;
    cvtColor(img, gray,  CV_BGR2GRAY);
    Canny( img, edge, 50, 150, 3);
     edge.convertTo(draw, CV_8U);
     
-    return img;
+    return draw;
 }
 
 int main()

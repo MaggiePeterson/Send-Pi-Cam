@@ -16,17 +16,17 @@
 #include <netinet/in.h> 
 
 #define PORT 8888 
-#define BUFFER_SIZE 3*800*600
+#define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
 
 Mat returnEdges(Mat img){
     Mat gray, edge, draw;
-    cvtColor(img, gray, CV_BGR2GRAY);
-    Canny( gray, edge, 50, 150, 3);
-    edge.convertTo(draw, CV_8UC3);
+   cvtColor(img, gray,  CV_BGR2GRAY);
+   Canny( img, edge, 50, 150, 3);
+    edge.convertTo(draw, CV_8U);
     
-    return draw;
+    return img;
 }
 
 int main()
@@ -116,7 +116,7 @@ int main()
             
            // rawImg = myVideo.getImage();
           //  currImg = returnEdges(rawImg);
-            currImg = returnEdge(myVideo.getImage()); 
+            currImg = returnEdges(myVideo.getImage()); 
             
             
             if(currImg.empty())
@@ -130,9 +130,9 @@ int main()
             string output;
             static int frameNumber =0;
             output =  to_string(imageSize.width) + to_string(imageSize.height) + ":" +
-                    to_string(imageSize.width * imageSize.height * 3) + "?";
+                    to_string(imageSize.width * imageSize.height * 1) + "?";
             cout << "Frame Number: " << frameNumber++ << " " << text <<endl;
-            int datalen = imageSize.width * imageSize.height * 3, currPos = 0;
+            int datalen = imageSize.width * imageSize.height * 1, currPos = 0;
             int packetSize = imageSize.width;
             int currPacket; 
             startTime = clock();

@@ -42,7 +42,7 @@ OpenVideo::OpenVideo(int camNum){
    
 }
 
-OpenVideo::setAutoExposure(){
+void OpenVideo::setAutoExposure(){
     this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0);
     cout<<"AUTO EXPOSURE"<<endl; 
     if(!this->capture->isOpened()){

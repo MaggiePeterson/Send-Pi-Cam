@@ -102,6 +102,7 @@ int main()
     gettimeofday(&currFrameTime, NULL);
 
     OpenVideo myVideo(0);
+    myVideo.setAutoExposure();
    
         cout << "Capture is opened" << endl;
         while(waitKey(10) != 'q')

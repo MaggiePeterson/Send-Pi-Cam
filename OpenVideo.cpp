@@ -46,6 +46,10 @@ OpenVideo::OpenVideo(int camNum){
         exit(EXIT_FAILURE);
     }
 }
+
+void OpenVideo::setAutoExposure(){
+    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0)
+}
 void OpenVideo::ChangeExposure(void) {
     uvc_context_t *ctx;
     uvc_device_t *dev;

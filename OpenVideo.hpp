@@ -37,6 +37,7 @@ class OpenVideo {
     
 public:
     OpenVideo(int camNum);
+    void setAutoExposure();
     static void cb(uvc_frame_t *frame, void *ptr);
     Mat getImage();
     

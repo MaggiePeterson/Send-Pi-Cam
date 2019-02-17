@@ -112,7 +112,10 @@ int main()
         int edgeSize = contours.size();
         int sizeLen =  sizeof(int);
         cout<<"Size: " + to_string(edgeSize)<<endl;
-        send(new_socket,&edgeSize,sizeLen,0 );
+       
+        if(!send(new_socket,&edgeSize,sizeLen,0 ){
+            cout<<"ERROR: cannot send data"<<endl;
+        }
         
         //int send(int fd, void *buffer, size_t n, int flags)
         
@@ -140,7 +143,7 @@ int main()
          } */
         
         
-        
+    }
         
         return 0;
     }

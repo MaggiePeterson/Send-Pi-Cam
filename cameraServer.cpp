@@ -21,14 +21,13 @@ using namespace cv;
 using namespace std;
 
 //TODO - SEND AS COUNTOURS
-int returnEdges(Mat img, vector<vector<Point>> &cont ){
+void returnEdges(Mat img, vector<vector<Point>> &contours ){
     Mat gray, edge, draw;
     cvtColor(img, gray,  CV_BGR2GRAY);
     Canny( img, edge, 50, 150, 3);
     edge.convertTo(draw, CV_8U);
     vector<Vec4i> hierarchy;
-    findContours( draw, cont, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
-    return cont.size();
+    findContours( draw, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE ); //add contours data to vector contours
 }
 
 int main()
@@ -41,9 +40,6 @@ int main()
     char buffer[BUFFER_SIZE] = {0};
     const char *hello = "Hello from server";
     string text;
-    
-    //opencv data vars
-    Mat currImg;          //output Image
     
     
     // Creating socket file descriptor
@@ -99,10 +95,10 @@ int main()
         
         //grab image from camera
         
-        edgeSize = returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         
-        if(!edgeSize){
+        if(!contours.size()){
             cout<<"ERROR: contours is empty"<<endl;
             break;
         }

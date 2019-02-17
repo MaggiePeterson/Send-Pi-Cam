@@ -20,8 +20,7 @@
 using namespace cv;
 using namespace std;
 
-//TODO - SEND AS COUNTOURS
-void returnEdges(Mat img, vector<vector<Point>> &contours ){
+void writeEdges(Mat img, vector<vector<Point>> &contours ){
     Mat gray, edge, draw;
     cvtColor(img, gray,  CV_BGR2GRAY);
     Canny( img, edge, 50, 150, 3);
@@ -39,8 +38,6 @@ int main()
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     const char *hello = "Hello from server";
-    string text;
-    
     
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
@@ -72,13 +69,10 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    
     //timing variables to check performace
-    clock_t startTime=clock(), currTime=clock();
     
-    struct timeval currFrameTime,lastFrameTime;
-    gettimeofday(&currFrameTime, NULL);
     int edgeSize = 0;
+    int sizeLen =  sizeof(int);
     
     vector<vector<Point>> contours;
     OpenVideo myVideo(0);
@@ -87,61 +81,19 @@ int main()
     cout << "Capture is opened" << endl;
     while(waitKey(10) != 'q')
     {
-        gettimeofday(&currFrameTime, NULL);
-        //calculate timing data
-        long int ms =(currFrameTime.tv_sec * 1000 + currFrameTime.tv_usec / 1000) - (lastFrameTime.tv_sec * 1000 + lastFrameTime.tv_usec / 1000) ;
-        text =   "Proc time: "+ to_string((float)(currTime - startTime) /CLOCKS_PER_SEC) + " FPS: " + to_string((float)(1000.0/ ms));
-        lastFrameTime = currFrameTime;
         
-        //grab image from camera
+        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+	    edgeSize = contours.size();
         
-        returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-	edgeSize = contours.size();         
-        
-        if(!contours.size()){
+        if(!edgeSize){
             cout<<"ERROR: contours is empty"<<endl;
-//            break;
         }
         
+         cout<<"Size of contours: " + to_string(edgeSize)<<endl;
         
-        //log the cpu clock after alloc and draw
-        
-        
-        //send size of vector
-        //int edgeSize = contours.size();
-        int sizeLen =  sizeof(int);
-        // cout<<"Size: " + to_string(edgeSize)<<endl;
-        
-        if(!send(new_socket,&edgeSize,sizeLen,0 )){
+        if(!send(new_socket,&edgeSize, sizeLen, 0 )){
             cout<<"ERROR: cannot send data"<<endl;
         }
-        
-        //int send(int fd, void *buffer, size_t n, int flags)
-        
-        /*
-         string output;
-         static int frameNumber =0;
-         output =  to_string(imageSize.width) + to_string(imageSize.height) + ":" + to_string(imageSize.width * imageSize.height * 1) + "?";
-         cout << "Frame Number: " << frameNumber++ << " " << text <<endl;
-         int datalen = imageSize.width * imageSize.height * 1, currPos = 0;
-         int packetSize = imageSize.width;
-         int currPacket;
-         startTime = clock();
-         while(currPos < datalen)
-         {
-         if(currPos + packetSize > datalen)
-         currPacket = datalen - currPos;
-         else
-         currPacket = packetSize;
-         
-         send(new_socket, currImg.data + currPos, currPacket, 0);
-         currPos += currPacket;
-         }
-         currTime = clock();
-         
-         } */
-        
-        
     }
     
     return 0;

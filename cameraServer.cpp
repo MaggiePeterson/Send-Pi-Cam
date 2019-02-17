@@ -44,8 +44,7 @@ int main()
     Mat rawImg;
 
     //opencv data vars
- //   VideoCapture capture; //camera feed
-    Mat currImg,          //output Image    
+    Mat currImg;          //output Image
     
 
      // Creating socket file descriptor 
@@ -103,18 +102,24 @@ int main()
             returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
             
             
-            if(currImg.empty())
+            if(!contours.empty())
                 break;
 
             //log the cpu clock after alloc and draw
             
 
-            //send images 
-            Size imageSize = currImg.size();
+            //send size of vector
+            Size edgeSize = contours.size();
+            int sizeLen =  sizeof(int);
+            cout<<"Size: " + edgeSize<<endl;
+            send(new_socket,edgeSize,sizeLen,0 );
+            
+            //int send(int fd, void *buffer, size_t n, int flags)
+            
+            /*
             string output;
             static int frameNumber =0;
-            output =  to_string(imageSize.width) + to_string(imageSize.height) + ":" +
-                    to_string(imageSize.width * imageSize.height * 1) + "?";
+            output =  to_string(imageSize.width) + to_string(imageSize.height) + ":" + to_string(imageSize.width * imageSize.height * 1) + "?";
             cout << "Frame Number: " << frameNumber++ << " " << text <<endl;
             int datalen = imageSize.width * imageSize.height * 1, currPos = 0;
             int packetSize = imageSize.width;
@@ -132,7 +137,7 @@ int main()
             }
             currTime = clock();
 
-        }
+        } */ 
     
         
     

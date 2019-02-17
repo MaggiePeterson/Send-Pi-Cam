@@ -25,9 +25,9 @@ int returnEdges(Mat img, vector<vector<Point>> &cont ){
     Mat gray, edge, draw;
     cvtColor(img, gray,  CV_BGR2GRAY);
     Canny( img, edge, 50, 150, 3);
-    //edge.convertTo(draw, CV_8U);
+    edge.convertTo(draw, CV_8U);
     vector<Vec4i> hierarchy;
-    findContours( edge, cont, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
+    findContours( draw, cont, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
     return cont.size();
 }
 
@@ -102,7 +102,7 @@ int main()
         edgeSize = returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         
-        if(!contours.empty()){
+        if(!edgeSize){
             cout<<"ERROR: contours is empty"<<endl;
             break;
         }

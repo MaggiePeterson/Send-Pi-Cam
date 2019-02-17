@@ -21,15 +21,14 @@ using namespace cv;
 using namespace std;
 
 //TODO - SEND AS COUNTOURS
-vector<vector<Point>> returnEdges(Mat img, vector<vector<Point>> &cont ){
+int returnEdges(Mat img, vector<vector<Point>> &cont ){
     Mat gray, edge, draw;
     cvtColor(img, gray,  CV_BGR2GRAY);
     Canny( img, edge, 50, 150, 3);
     //edge.convertTo(draw, CV_8U);
     vector<Vec4i> hierarchy;
     findContours( edge, cont, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
-    
-    return cont;
+    return cont.size();
 }
 
 int main()
@@ -83,6 +82,7 @@ int main()
     
     struct timeval currFrameTime,lastFrameTime;
     gettimeofday(&currFrameTime, NULL);
+    int edgeSize = 0;
     
     vector<vector<Point>> contours;
     OpenVideo myVideo(0);
@@ -99,21 +99,24 @@ int main()
         
         //grab image from camera
         
-        returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        edgeSize = returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         
-        if(!contours.empty())
+        if(!contours.empty()){
+            cout<<"ERROR: contours is empty"<<endl;
             break;
+        }
+        
         
         //log the cpu clock after alloc and draw
         
         
         //send size of vector
-        int edgeSize = contours.size();
+        //int edgeSize = contours.size();
         int sizeLen =  sizeof(int);
-        cout<<"Size: " + to_string(edgeSize)<<endl;
-       
-        if(!send(new_socket,&edgeSize,sizeLen,0 ){
+        // cout<<"Size: " + to_string(edgeSize)<<endl;
+        
+        if(!send(new_socket,&edgeSize,sizeLen,0 )){
             cout<<"ERROR: cannot send data"<<endl;
         }
         
@@ -144,8 +147,8 @@ int main()
         
         
     }
-        
-        return 0;
-    }
     
-    
+    return 0;
+}
+
+

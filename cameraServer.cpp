@@ -96,11 +96,11 @@ int main()
         //grab image from camera
         
         returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-        
+	edgeSize = contours.size();         
         
         if(!contours.size()){
             cout<<"ERROR: contours is empty"<<endl;
-            break;
+//            break;
         }
         
         

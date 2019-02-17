@@ -21,13 +21,15 @@ using namespace cv;
 using namespace std;
 
 //TODO - SEND AS COUNTOURS 
-Mat returnEdges(Mat img){
+vector<vector<Point>> returnEdges(Mat img, vector<vector<Point>> &cont ){
     Mat gray, edge, draw;
-   cvtColor(img, gray,  CV_BGR2GRAY);
-   Canny( img, edge, 50, 150, 3);
-    edge.convertTo(draw, CV_8U);
+    cvtColor(img, gray,  CV_BGR2GRAY);
+    Canny( img, edge, 50, 150, 3);
+    //edge.convertTo(draw, CV_8U);
+    vector<Vec4i> hierarchy;
+    findContours( edge, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE );
     
-    return draw;
+    return contours;
 }
 
 int main()
@@ -41,28 +43,10 @@ int main()
     const char *hello = "Hello from server";
     Mat rawImg;
 
-    //text settings
-    string text = "Test String";
-    
-    int tBoxPosX = 20,
-        tBoxPosY = 20,
-        tBoxBorderThickness = 1,
-        tBoxFont = FONT_HERSHEY_COMPLEX_SMALL,
-        tBoxBaseline = 0;
-
-    double tBoxFontScale =1;
-
-    Scalar textColor(255,50,55);
-
-    //calc dependant varsmak
-    Size tBoxBorderSize;
-
     //opencv data vars
  //   VideoCapture capture; //camera feed
     Mat currImg,          //output Image    
-        textForground,    //text color layer
-        textAlpha,        //text draw layer
-        image_roi;        //roi of output image
+    
 
      // Creating socket file descriptor 
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) 
@@ -88,8 +72,7 @@ int main()
         perror("listen"); 
         exit(EXIT_FAILURE); 
     } 
-    if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
-                       (socklen_t*)&addrlen))<0) 
+    if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
     { 
         perror("accept"); 
         exit(EXIT_FAILURE); 
@@ -102,6 +85,7 @@ int main()
     struct timeval currFrameTime,lastFrameTime;
     gettimeofday(&currFrameTime, NULL);
 
+    vector<vector<Point>> contours;
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
    
@@ -116,9 +100,7 @@ int main()
 
             //grab image from camera
             
-           // rawImg = myVideo.getImage();
-          //  currImg = returnEdges(rawImg);
-            currImg = returnEdges(myVideo.getImage()); 
+            returnEdges(myVideo.getImage(), contours); //saves image edges to vector contours
             
             
             if(currImg.empty())

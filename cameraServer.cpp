@@ -71,7 +71,8 @@ int main()
     
     //timing variables to check performace
     
-    int edgeSize = 0;
+    int contoursSize = 0;
+    int nestedVecSize = 0;
     int sizeLen =  sizeof(int);
     
     vector<vector<Point>> contours;
@@ -83,16 +84,22 @@ int main()
     {
         
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-	    edgeSize = contours.size();
+	    contoursSize = contours.size();
         
-        if(!edgeSize){
+        if(!contoursSize){
             cout<<"ERROR: contours is empty"<<endl;
         }
         
          cout<<"Size of contours: " + to_string(edgeSize)<<endl;
         
-        if(!send(new_socket,&edgeSize, sizeLen, 0 )){
+        if(!send(new_socket,&edgeSize, sizeLen, 0 )){       //sends the SIZE of vector contours to client
             cout<<"ERROR: cannot send data"<<endl;
+        }
+        
+        for(int i =0; i<edgeSize; i++){
+            nestedVecSize = contours[i].size();
+            if (!send(new_socket, &nestedVecSize, sizeLen, 0)){ //send size of vector within vector
+                cout<<"ERROR: cannot send size of nested vector"<<endl;
         }
     }
     

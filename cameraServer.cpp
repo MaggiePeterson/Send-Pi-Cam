@@ -90,19 +90,18 @@ int main()
             cout<<"ERROR: contours is empty"<<endl;
         }
         
-         cout<<"Size of contours: " + to_string(edgeSize)<<endl;
         
-        if(!send(new_socket,&edgeSize, sizeLen, 0 )){       //sends the SIZE of vector contours to client
+        if(!send(new_socket,&contoursSize, sizeLen, 0 )){       //sends the SIZE of vector contours to client
             cout<<"ERROR: cannot send data"<<endl;
         }
-        
-        for(int i =0; i<edgeSize; i++){
+	cout<<"size: "<<contoursSize<<endl;        
+        for(int i =0; i<contoursSize; i++){
             nestedVecSize = contours[i].size();
             if (!send(new_socket, &nestedVecSize, sizeLen, 0)){ //send size of vector within vector
                 cout<<"ERROR: cannot send size of nested vector"<<endl;
         }
     }
-    
+}    
     return 0;
 }
 

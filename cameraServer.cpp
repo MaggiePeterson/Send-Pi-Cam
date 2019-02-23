@@ -75,7 +75,7 @@ int main()
     int nestedVecSize = 0;
     int sizeLen =  sizeof(int);
     
-    vector<vector<Point>> contours;
+    vector< vector<Point> > contours;
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
     
@@ -99,7 +99,12 @@ int main()
             nestedVecSize = contours[i].size();
             if (!send(new_socket, &nestedVecSize, sizeLen, 0)){ //send size of vector within vector
                 cout<<"ERROR: cannot send size of nested vector"<<endl;
-        }
+            }
+            for(int j=0; j<nestedVecSize; j++){
+                send(new_socket, &contours[i][j].x, sizeLen, 0));        //sending the points in the nested vector of the entire contour
+                send(new_socket, &contours[i][j].y, sizeLen, 0));
+            }
+            
     }
 }    
     return 0;

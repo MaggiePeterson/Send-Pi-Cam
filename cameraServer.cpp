@@ -101,8 +101,12 @@ int main()
                 cout<<"ERROR: cannot send size of nested vector"<<endl;
             }
             for(int j=0; j<nestedVecSize; j++){
-                send(new_socket, &contours[i][j].x, sizeLen, 0));        //sending the points in the nested vector of the entire contour
-                send(new_socket, &contours[i][j].y, sizeLen, 0));
+                if(! send(new_socket, &contours[i][j].x, sizeLen, 0)){
+                    cout<<"cannot send contour point x"<<endl;
+                }        //sending the points in the nested vector of the entire contour
+                if(!send(new_socket, &contours[i][j].y, sizeLen, 0)){
+                    cout<<"cannot send contour point y"<<endl;
+                }
             }
             
     }

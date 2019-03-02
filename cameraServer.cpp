@@ -105,8 +105,7 @@ int main()
         //cout << vts.str() << std::endl;
         s = vts.str();
         
-        
-      /*  if(!send(new_socket, &size, sizeof(int),0)){
+       if(!send(new_socket, &size, sizeof(int),0)){         //send size of string
             cout<<"ERROR: cannot send size of string"<<endl;
         }
         cout<<"Size of string: "<<size<<endl;
@@ -114,15 +113,9 @@ int main()
         if(!send(new_socket, s.c_str(), s.size(), 0)){
             cout<<"ERROR: cannot send string"<<endl;
         }
-        cout<<"String: "<<s<<endl; */
+        cout<<"String: "<<s<<endl;
         
        
-        
-        uint32_t dataLength = htonl(s.size()); // Ensure network byte order
-        // when sending the data length
-        
-        send(sd,&dataLength ,sizeof(uint32_t) ,0); // Send the data length
-        send(sd,dataToSend.c_str(),dataToSend.size(),0);
     }
     
     return 0;

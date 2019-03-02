@@ -106,8 +106,12 @@ int main()
         s = vts.str();
         size = s.size();
         
-        send(new_socket, &size, sizeof(int),0); 
-        send(new_socket, &s, size, 0);
+        if(!send(new_socket, &size, sizeof(int),0)){
+            cout<<"cannot send"<<endl;
+        }
+        if(!send(new_socket, &s, size, 0)){
+            cout<<"cannot send"<<endl; 
+        }
     }
     
     return 0;

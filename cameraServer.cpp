@@ -88,19 +88,22 @@ int main()
         
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         contoursSize = contours.size();
-        std::ostringstream vts;
+        ostringstream vts;
+        string s;
         
         if (!contours.empty())
         {
             // Convert all but the last element to avoid a trailing ","
-            std::copy(contours.begin(), contours.end()-1,
-                      std::ostream_iterator< vector <Point> >(vts, ", "));
+            copy(contours.begin(), contours.end()-1,
+                 std::ostream_iterator< vector <Point> >(vts, ", "));
             
             // Now add the last element with no delimiter
             vts << contours.back();
         }
         
-        std::cout << vts.str() << std::endl;
+        //cout << vts.str() << std::endl;
+        s = vts.str();
+        send(new_socket, &s, sizeof(string), 0);
     }
     
     return 0;

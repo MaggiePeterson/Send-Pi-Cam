@@ -81,6 +81,7 @@ int main()
     vector< vector<Point> > contours;
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
+    int size = 0;
     
     cout << "Capture is opened" << endl;
     while(waitKey(10) != 'q')
@@ -103,7 +104,10 @@ int main()
         
         //cout << vts.str() << std::endl;
         s = vts.str();
-        send(new_socket, &s, sizeof(string), 0);
+        size = s.size();
+        
+        send(new_socket, &size, sizeof(int),0); 
+        send(new_socket, &s, size, 0);
     }
     
     return 0;

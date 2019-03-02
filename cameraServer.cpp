@@ -104,14 +104,14 @@ int main()
         
         //cout << vts.str() << std::endl;
         s = vts.str();
-        size = s.size();
+        
         
         if(!send(new_socket, &size, sizeof(int),0)){
             cout<<"ERROR: cannot send size of string"<<endl;
         }
         cout<<"Size of string: "<<size<<endl;
         
-        if(!send(new_socket, &s, size, 0)){
+        if(!send(new_socket, s.c_str(), s.size(), 0)){
             cout<<"ERROR: cannot send string"<<endl;
         }
         cout<<"String: "<<s<<endl;

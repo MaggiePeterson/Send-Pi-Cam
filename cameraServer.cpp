@@ -96,7 +96,7 @@ int main()
         {
             // Convert all but the last element to avoid a trailing ","
             copy(contours.begin(), contours.end()-1,
-                 std::ostream_iterator< vector <Point> >(vts, ", "));
+                 std::ostream_iterator< vector <Point> >(vts, "/n "));
             
             // Now add the last element with no delimiter
             vts << contours.back();
@@ -107,11 +107,14 @@ int main()
         size = s.size();
         
         if(!send(new_socket, &size, sizeof(int),0)){
-            cout<<"cannot send"<<endl;
+            cout<<"ERROR: cannot send size of string"<<endl;
         }
+        cout<<"Size of string: "<<size<<endl;
+        
         if(!send(new_socket, &s, size, 0)){
-            cout<<"cannot send"<<endl; 
+            cout<<"ERROR: cannot send string"<<endl;
         }
+        cout<<"String: "<<s<<endl;
     }
     
     return 0;

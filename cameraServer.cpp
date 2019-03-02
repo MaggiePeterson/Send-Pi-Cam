@@ -84,33 +84,22 @@ int main()
     {
         
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-	    contoursSize = contours.size();
+        contoursSize = contours.size();
+        std::ostringstream vts;
         
-        if(!contoursSize){
-            cout<<"ERROR: contours is empty"<<endl;
-        }
-        
-        
-        if(!send(new_socket,&contoursSize, sizeLen, 0 )){       //sends the SIZE of vector contours to client
-            cout<<"ERROR: cannot send data"<<endl;
-        }
-	cout<<"size: "<<contoursSize<<endl;        
-        for(int i =0; i<contoursSize; i++){
-            nestedVecSize = contours[i].size();
-            if (!send(new_socket, &nestedVecSize, sizeLen, 0)){ //send size of vector within vector
-                cout<<"ERROR: cannot send size of nested vector"<<endl;
-            }
-            for(int j=0; j<nestedVecSize; j++){
-                if(! send(new_socket, &contours[i][j].x, sizeLen, 0)){
-                    cout<<"cannot send contour point x"<<endl;
-                }        //sending the points in the nested vector of the entire contour
-                if(!send(new_socket, &contours[i][j].y, sizeLen, 0)){
-                    cout<<"cannot send contour point y"<<endl;
-                }
-            }
+        if (!contours.empty())
+        {
+            // Convert all but the last element to avoid a trailing ","
+            std::copy(contours.begin(), contours.end()-1,
+                      std::ostream_iterator<int>(vts, ", "));
             
+            // Now add the last element with no delimiter
+            vts << contours.back();
+        }
+        
+        std::cout << vts.str() << std::endl;
     }
-}    
+    
     return 0;
 }
 

@@ -8,7 +8,10 @@
 #include <string>
 #include <vector>
 #include "OpenVideo.hpp"
-
+#include <algorithm>
+#include <sstream>
+#include <iterator>
+#include <iostream>
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -91,7 +94,7 @@ int main()
         {
             // Convert all but the last element to avoid a trailing ","
             std::copy(contours.begin(), contours.end()-1,
-                      std::ostream_iterator<int>(vts, ", "));
+                      std::ostream_iterator< vector <Point> >(vts, ", "));
             
             // Now add the last element with no delimiter
             vts << contours.back();

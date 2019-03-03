@@ -72,51 +72,37 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    //timing variables to check performace
-    
-    int contoursSize = 0;
-    int nestedVecSize = 0;
-    int sizeLen =  sizeof(int);
-    
+    int size = 0;
     vector< vector<Point> > contours;
+    vector< vector< vector<Point> > >data(1000);
+    
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
-    int size = 0;
-    
     cout << "Capture is opened" << endl;
+    
     while(waitKey(10) != 'q')
     {
         
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-        contoursSize = contours.size();
-        ostringstream vts;
-        string s;
         
-        if (!contours.empty())
-        {
-            // Convert all but the last element to avoid a trailing ","
-            copy(contours.begin(), contours.end()-1,
-                 std::ostream_iterator< vector <Point> >(vts, "/n "));
-            
-            // Now add the last element with no delimiter
-            vts << contours.back();
+        while(sizeof(data) + sizeof(contours) <= 1000){
+            data.push_back(contours);                   //add contours to list
         }
         
-        //cout << vts.str() << std::endl;
-        s = vts.str();
-        size = s.size(); 
+        size = data.size();
         
-       if(!send(new_socket, &size, sizeof(int),0)){         //send size of string
-            cout<<"ERROR: cannot send size of string"<<endl;
+        if(!send(new_socket, &size, sizeof(int),0)){            //send number of elements over
+            cout<<"ERROR: cannot send size of array"<<endl;
         }
-        cout<<"Size of string: "<<size<<endl;
         
-        if(!send(new_socket, s.c_str(), s.size(), 0)){
-            cout<<"ERROR: cannot send string"<<endl;
+        if(!send(new_socket, &data, size, 0)){
+            cout<<"ERROR: cannot send data array"<<endl;
         }
-        cout<<"String: "<<s<<endl;
         
-       
+        data.erase(data.begin(), data.end());           //clear data for next contours
+        
+        
+        
     }
     
     return 0;

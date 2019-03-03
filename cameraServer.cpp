@@ -104,6 +104,7 @@ int main()
         
         //cout << vts.str() << std::endl;
         s = vts.str();
+        size = s.size(); 
         
        if(!send(new_socket, &size, sizeof(int),0)){         //send size of string
             cout<<"ERROR: cannot send size of string"<<endl;

@@ -89,7 +89,7 @@ int main()
             data.push_back(contours);                   //add contours to list
         }
         
-        size = data.size();
+        size = sizeof(data);
         
         if(!send(new_socket, &size, sizeof(int),0)){            //send number of elements over
             cout<<"ERROR: cannot send size of array"<<endl;

@@ -73,7 +73,7 @@ int main()
     }
     
     int sizeC =0;
-    int sizeD =0;
+    int sizeD =24;
     vector< vector<Point> > contours;
     vector< vector< vector<Point> > >data(1000);
     
@@ -92,13 +92,14 @@ int main()
             writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
             
             for(int i =0; i< contours.size(); i++){
-                sizeC += sizeof(Point) * contours[i].size();    //size of contours == bit size of Point * size of
+                sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
             }
             
             data.push_back(contours);
             sizeD += sizeC; //is this how it works?? do i need to add sizeof(vector)
 
         }
+        cout<<sizeD<<endl;
         
         if(!send(new_socket, &sizeD, sizeof(int),0)){            //send number of elements over
             cout<<"ERROR: cannot send size of array"<<endl;

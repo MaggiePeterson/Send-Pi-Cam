@@ -109,8 +109,11 @@ int main()
             cout<<"ERROR: cannot send data array"<<endl;
         }
         
+        cout<<data<<endl;
+        
         data.erase(data.begin(), data.end());           //clear data for next contours
         sizeD =0;
+        sizeC =24;
         
         
         

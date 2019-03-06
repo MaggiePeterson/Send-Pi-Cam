@@ -84,24 +84,19 @@ int main()
     while(waitKey(10) != 'q')
     {
         
-        
-        
-        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-        
-        for(int i =0; i< contours.size(); i++){
-            sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
-        }
-        
-        
         while(sizeD + sizeC <= 1000){
             //need to have it add the new contours
+            writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
             
-           
+            for(int i =0; i< contours.size(); i++){
+                sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
+            }
+            
             data.push_back(contours);
-            sizeD += sizeC; //is this how it works?? do i need to add sizeof(vector)
+            sizeD += sizeC + 24; //is this how it works?? do i need to add sizeof(vector)
 
         }
-        cout<<sizeD<<endl;
+        cout<<"size of data: "<<sizeD<<endl;
         
         if(!send(new_socket, &sizeD, sizeof(int),0)){            //send number of elements over
             cout<<"ERROR: cannot send size of array"<<endl;
@@ -111,14 +106,12 @@ int main()
             cout<<"ERROR: cannot send data array"<<endl;
         }
         
-        cout<<data<<endl;
+        //cout<<data<<endl;
         
         data.erase(data.begin(), data.end());           //clear data for next contours
         sizeD =24;
         sizeC =0;
-        
-        
-        
+    
     }
     
     return 0;

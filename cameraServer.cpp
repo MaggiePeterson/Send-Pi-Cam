@@ -86,15 +86,17 @@ int main()
         
         
         
+        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        
+        for(int i =0; i< contours.size(); i++){
+            sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
+        }
+        
+        
         while(sizeD + sizeC <= 1000){
             //need to have it add the new contours
             
-            writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-            
-            for(int i =0; i< contours.size(); i++){
-                sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
-            }
-            
+           
             data.push_back(contours);
             sizeD += sizeC; //is this how it works?? do i need to add sizeof(vector)
 
@@ -112,8 +114,8 @@ int main()
         cout<<data<<endl;
         
         data.erase(data.begin(), data.end());           //clear data for next contours
-        sizeD =0;
-        sizeC =24;
+        sizeD =24;
+        sizeC =0;
         
         
         

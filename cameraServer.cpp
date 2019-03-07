@@ -84,16 +84,30 @@ int main()
     while(waitKey(10) != 'q')
     {
         
+        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        
+        for(int i =0; i< contours.size(); i++){
+            sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
+        }
+        /*
+         wrote edges
+         size c size
+         if size d size c...
+            data.push countours
+            data size += size
+         
+         
+         */
+        
         while(sizeD + sizeC <= 1000){
             //need to have it add the new contours
+             data.push_back(contours);
+             sizeD += sizeC + 24; //is this how it works?? do i need to add sizeof(vector)
             writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
             
             for(int i =0; i< contours.size(); i++){
                 sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
             }
-            
-            data.push_back(contours);
-            sizeD += sizeC + 24; //is this how it works?? do i need to add sizeof(vector)
 
         }
         cout<<"size of data: "<<sizeD<<endl;

@@ -74,8 +74,10 @@ int main()
     int contourlen = 0;
     int currdata = 0;
     int start = 0;
-    int currPos = 0;
+    int currPos;
     int len = 0;
+    int k =0;
+    int l =0;
     
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
@@ -84,6 +86,7 @@ int main()
     while(waitKey(10) != 'q')
     {
         
+        
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         for(int i =0; i< contours.size(); i++){
@@ -91,14 +94,20 @@ int main()
         }
         
         while(currPos < contourlen ){                          //while not entirely through the contour...
-            while (currdata - start <= 1000){                 //populate data with the points
                 
-                for(int i =0; i< contours.size(); i++){
-                    for( int j =0; j< contours[i].size(); j++){
-                        data.push_back(contours[i][j]);
-                        currdata += sizeof(Point);
+                for(int i = k; i< contours.size(); i++){
+                    for( int j =l; j< contours[i].size(); j++){         //make valule for this
+                        
+                        while (currdata - start <= 1000){
+                            data.push_back(contours[i][j]);
+                            currdata += sizeof(Point);
+                        }
+                        l++;
+                        break;
                     }
+                    k++;
                 }
+            
                 currPos += currdata;
                 len = currdata -  start;
                 
@@ -111,6 +120,10 @@ int main()
             data.clear();            //erase first chunk of data sent
             
         }
+    currPos = 0;
+    currdata =0;
+    k =0;
+    l =0;
         
 
         

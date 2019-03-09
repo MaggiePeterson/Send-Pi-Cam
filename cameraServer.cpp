@@ -71,11 +71,13 @@ int main()
         perror("accept");
         exit(EXIT_FAILURE);
     }
-    
-    int sizeC =0;
-    int sizeD =24;
+
     vector< vector<Point> > contours;
-    vector< vector< vector<Point> > >data(1000);
+    vector<Point> data;
+    int datalen = 0;
+    int currdata = 0;
+    int start = 0;
+    int currPos = 0;
     
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
@@ -87,44 +89,32 @@ int main()
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         for(int i =0; i< contours.size(); i++){
-            sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
+            datalen = 24 + (sizeof(Point) * contours[i].size());    //data len is the size of the entire contour
         }
-        /*
-         wrote edges
-         size c size
-         if size d size c...
-            data.push countours
-            data size += size
-         
-         
-         */
         
-        while(sizeD + sizeC <= 1000){
-            //need to have it add the new contours
-             data.push_back(contours);
-             sizeD += sizeC + 24; //is this how it works?? do i need to add sizeof(vector)
-            writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-            
-            for(int i =0; i< contours.size(); i++){
-                sizeC += 24 + (sizeof(Point) * contours[i].size());    //size of contours == bit size of Point * size of
+        while(currPos < datalen ){
+            while (currdata - start < 1000){            //why do i need start
+                
+                for(int i =0; i< contours.size(); i++){
+                    for( int j =0; j< contours[i].size()){
+                        data.push_back(contours[i][j]);
+                        currdata += sizeof(Point) * data.size();
+                    }
+                }
+                currPos = currdata - start;
+                
             }
-
+            
+            send(new_socket,&currdata, sizeof(int),0 )
+            send(new_socket, data.data() + currPos, currdata, 0);
+            
+            data.erase(data[start], data[currPos]);             //erase first chunk of data sent
+            currPos = 0;
+               
         }
-        cout<<"size of data: "<<sizeD<<endl;
+       
         
-        if(!send(new_socket, &sizeD, sizeof(int),0)){            //send number of elements over
-            cout<<"ERROR: cannot send size of array"<<endl;
-        }
-        
-        if(!send(new_socket, &data, sizeD, 0)){
-            cout<<"ERROR: cannot send data array"<<endl;
-        }
-        
-        //cout<<data<<endl;
-        
-        data.erase(data.begin(), data.end());           //clear data for next contours
-        sizeD =24;
-        sizeC =0;
+       
     
     }
     

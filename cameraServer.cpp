@@ -2,12 +2,9 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 #include "opencv2/videoio.hpp"
-#include <sys/time.h>
-#include <time.h>
-#include <iostream>
-#include <string>
-#include <vector>
 #include "OpenVideo.hpp"
+#include <iostream>
+#include <vector>
 #include <algorithm>
 #include <sstream>
 #include <iterator>
@@ -74,10 +71,11 @@ int main()
     
     vector< vector<Point> > contours;
     vector<Point> data;
-    int datalen = 0;
+    int contourlen = 0;
     int currdata = 0;
     int start = 0;
     int currPos = 0;
+    int len = 0;
     
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
@@ -89,11 +87,11 @@ int main()
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         for(int i =0; i< contours.size(); i++){
-            datalen =  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
+            contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
         }
         
-        while(currPos < datalen ){                          //while not entirely through the contour....
-            while (currdata - start < 1000){
+        while(currPos < contourlen ){                          //while not entirely through the contour...
+            while (currdata - start <= 1000){                 //populate data with the points
                 
                 for(int i =0; i< contours.size(); i++){
                     for( int j =0; j< contours[i].size(); j++){
@@ -101,13 +99,15 @@ int main()
                         currdata += sizeof(Point);
                     }
                 }
-                currPos = currdata - start;
+                currPos += currdata;
+                len = currdata -  start;
                 
             }
             
             send(new_socket,&currdata, sizeof(int),0 );
-            send(new_socket, data.data(), currdata, 0);
+            send(new_socket, &data, len, 0);
             
+            start = currdata;
             data.clear();            //erase first chunk of data sent
             
         }

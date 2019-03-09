@@ -70,16 +70,15 @@ int main()
     }
     
     vector< vector<Point> > contours;
-    vector<Point> data;
+    vector< vector<Point> >data;
     int contourlen = 0;
     int currdata = 0;
     int start = 0;
     int currPos;
     int len = 0;
-    int k =0;
-    int l =0;
-    int countk =0;
-    int countl =0;
+    
+    int counti =0;
+    
     
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
@@ -97,19 +96,16 @@ int main()
         
         while(currPos < contourlen ){                          //while not entirely through the contour...
             
-            for(int i = countk; i< contours.size(); i++){
-                for( int j =countl; j< contours[i].size(); j++){         //make valule for this
-                    
-                    while (currdata - start <= 1000){
-                        data.push_back(contours[i][j]);
-                        currdata += sizeof(Point);
-                    }
-                    l++;
+            for(int i = counti; i< contours.size(); i++){
+                
+                while (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
+                    data.push_back(contours[i]);
+                    currdata += sizeof(Point) * contours[i].size();
                 }
-                k++;
+                counti = i;
+                
             }
-            countk = k;
-            countl =l;
+            
             
             currPos += currdata;
             len = currdata -  start;
@@ -123,8 +119,8 @@ int main()
         }
         currPos = 0;
         currdata =0;
-        k =0;
-        l =0;
+        counti =0;
+        
     }
     return 0;
     

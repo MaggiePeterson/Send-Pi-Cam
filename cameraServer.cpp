@@ -71,7 +71,7 @@ int main()
         perror("accept");
         exit(EXIT_FAILURE);
     }
-
+    
     vector< vector<Point> > contours;
     vector<Point> data;
     int datalen = 0;
@@ -89,33 +89,31 @@ int main()
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
         for(int i =0; i< contours.size(); i++){
-            datalen = 24 + (sizeof(Point) * contours[i].size());    //data len is the size of the entire contour
+            datalen =  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
         }
         
-        while(currPos < datalen ){
-            while (currdata - start < 1000){            //why do i need start
+        while(currPos < datalen ){                          //while not entirely through the contour....
+            while (currdata - start < 1000){
                 
                 for(int i =0; i< contours.size(); i++){
-                    for( int j =0; j< contours[i].size()){
+                    for( int j =0; j< contours[i].size(); j++){
                         data.push_back(contours[i][j]);
-                        currdata += sizeof(Point) * data.size();
+                        currdata += sizeof(Point);
                     }
                 }
                 currPos = currdata - start;
                 
             }
             
-            send(new_socket,&currdata, sizeof(int),0 )
-            send(new_socket, data.data() + currPos, currdata, 0);
+            send(new_socket,&currdata, sizeof(int),0 );
+            send(new_socket, data.data(), currdata, 0);
             
-            data.erase(data[start], data[currPos]);             //erase first chunk of data sent
-            currPos = 0;
-               
+            data.clear();            //erase first chunk of data sent
+            
         }
-       
         
-       
-    
+
+        
     }
     
     return 0;

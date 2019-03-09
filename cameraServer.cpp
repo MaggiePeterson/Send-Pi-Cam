@@ -78,6 +78,8 @@ int main()
     int len = 0;
     int k =0;
     int l =0;
+    int countk =0;
+    int countl =0;
     
     OpenVideo myVideo(0);
     myVideo.setAutoExposure();
@@ -95,18 +97,20 @@ int main()
         
         while(currPos < contourlen ){                          //while not entirely through the contour...
                 
-                for(int i = k; i< contours.size(); i++){
-                    for( int j =l; j< contours[i].size(); j++){         //make valule for this
+                for(int i = countk; i< contours.size(); i++){
+                    for( int j =countl; j< contours[i].size(); j++){         //make valule for this
                         
                         while (currdata - start <= 1000){
                             data.push_back(contours[i][j]);
                             currdata += sizeof(Point);
                         }
                         l++;
-                        break;
+                        
                     }
                     k++;
                 }
+            countk = k;
+            countl =l;
             
                 currPos += currdata;
                 len = currdata -  start;
@@ -120,6 +124,7 @@ int main()
             data.clear();            //erase first chunk of data sent
             
         }
+    
     currPos = 0;
     currdata =0;
     k =0;

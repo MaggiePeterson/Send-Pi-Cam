@@ -96,26 +96,23 @@ int main()
         }
         
         while(currPos < contourlen ){                          //while not entirely through the contour...
-                
-                for(int i = countk; i< contours.size(); i++){
-                    for( int j =countl; j< contours[i].size(); j++){         //make valule for this
-                        
-                        while (currdata - start <= 1000){
-                            data.push_back(contours[i][j]);
-                            currdata += sizeof(Point);
-                        }
-                        l++;
-                        
+            
+            for(int i = countk; i< contours.size(); i++){
+                for( int j =countl; j< contours[i].size(); j++){         //make valule for this
+                    
+                    while (currdata - start <= 1000){
+                        data.push_back(contours[i][j]);
+                        currdata += sizeof(Point);
                     }
-                    k++;
+                    l++;
                 }
+                k++;
+            }
             countk = k;
             countl =l;
             
-                currPos += currdata;
-                len = currdata -  start;
-                
-            }
+            currPos += currdata;
+            len = currdata -  start;
             
             send(new_socket,&currdata, sizeof(int),0 );
             send(new_socket, &data, len, 0);
@@ -124,17 +121,15 @@ int main()
             data.clear();            //erase first chunk of data sent
             
         }
-    
-    currPos = 0;
-    currdata =0;
-    k =0;
-    l =0;
-        
-
-        
+        currPos = 0;
+        currdata =0;
+        k =0;
+        l =0;
     }
-    
     return 0;
+    
 }
+
+
 
 

@@ -30,8 +30,8 @@ message(STATUS "    version: ${libvc_VERSION}")
 message(STATUS "    libraries: ${libuvc_LIBS}")
 message(STATUS "    include path: ${libuvc_INCLUDE_DIRS}")
 
-set(SOURCES OpenVideo.cpp cameraServer.cpp)
-set(HEADERS OpenVideo.hpp)
+set(SOURCES OpenVideo.cpp cameraServer.cpp OpenFilter.hpp)
+set(HEADERS OpenVideo.hpp OpenFilter.hpp)
 
 file(GLOB cmaketest_HEADERS ${cmaketest_SRCDIR}/*.h)
 

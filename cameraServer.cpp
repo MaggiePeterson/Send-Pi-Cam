@@ -3,6 +3,7 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/videoio.hpp"
 #include "OpenVideo.hpp"
+#include "OpenFilter.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -66,6 +67,15 @@ int main()
     int currPos =0;
     int currPacket=0;
     Size imageSize;
+    int h_min,
+        h_max,
+        s_min,
+        s_max,
+        v_min,
+        v_max;
+
+    
+    
     OpenVideo myVideo(0);
     myVideo.ChangeExposure();
     cout << "Capture is opened" << endl;
@@ -74,9 +84,7 @@ int main()
     while(waitKey(10) != 'q')
     {
          currImg = myVideo.getImage();
-        
          imageSize = currImg.size();
-       
          datalen = imageSize.width * imageSize.height * 3;
          packetSize = imageSize.width;
        
@@ -91,6 +99,20 @@ int main()
             send(new_socket, currImg.data + currPos, currPacket, 0);
             currPos += currPacket;
         }
+        
+        read(new_socket, &h_min, sizeof(int),0 );
+        read(new_socket, &h_max, sizeof(int),0 );
+        read(new_socket, &s_min, sizeof(int),0 )
+        read(new_socket, &s_max, sizeof(int),0 );
+        read(new_socket, &v_min, sizeof(int),0 );
+        read(new_socket, &v_max, sizeof(int),0 );
+        
+        cout<<"HMIN"<<h_min<<endl;
+         cout<<"HMax"<<h_max<<endl;
+         cout<<"SMIN"<<s_min<<endl;
+         cout<<"SMAX"<<s_max<<endl;
+         cout<<"VMIN"<<v_min<<endl;
+         cout<<"VMAX"<<v_max<<endl;
         
     }
         

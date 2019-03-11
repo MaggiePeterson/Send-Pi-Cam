@@ -93,27 +93,34 @@ int main()
         for(int i =0; i< contours.size(); i++){
             contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
         }
+        cout<<"size of contour: "<<contourlen<<endl;
         
-        while(currPos < contourlen ){                          //while not entirely through the contour...
+        
+        while(currPos < contourlen){                          //while not entirely through the contour...
+            cout<<"CurrPos < contourlen"<<endl;
             
             for(int i = counti; i< contours.size(); i++){
                 
-                while (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
+                if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
+                   
+                    cout<<"size: "<<contours[i].size() * sizeof(Point<<end
                     data.push_back(contours[i]);
-                    currdata += sizeof(Point) * contours[i].size();
+                    currdata += 24 + sizneof(Point) * contours[i].size();
                 }
-                counti = i;
-                
+                else {
+                    counti = i;
+                    i = contours.size() + 1;
+                }
+                 cout<<currdata- start < contourlinesize"<<endl;
             }
             
-            
-            currPos += currdata;
             len = currdata -  start;
             
-            send(new_socket,&currdata, sizeof(int),0 );
+            send(new_socket,&len, sizeof(int),0 );
             send(new_socket, &data, len, 0);
             
-            start = currdata;
+            //start = currdata;
+            currPos = currdata;
             data.clear();            //erase first chunk of data sent
             
         }

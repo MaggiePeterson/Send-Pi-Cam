@@ -65,16 +65,18 @@ int main()
     myVideo.setAutoExposure();
     cout << "Capture is opened" << endl; */
     
+    Point center(300,400);
+    int radius = 300;
+    Rect rex(550,770,600,280);
+    
     while(waitKey(10) != 'q')
     {
         
-        Point center(30,40);
-        int radius = 300;
-        
         
         send(new_socket, &center, sizeof(Point),0);
-        
         send(new_socket, &radius, sizeof(int),0);
+        
+        send(new_socket, &rex, sizeof(Rect),0);
         
        
     }

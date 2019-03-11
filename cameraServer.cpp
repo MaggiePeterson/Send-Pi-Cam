@@ -20,15 +20,6 @@
 using namespace cv;
 using namespace std;
 
-void writeEdges(Mat img, vector<vector<Point>> &contours ){
-    Mat gray, edge, draw;
-    cvtColor(img, gray,  CV_BGR2GRAY);
-    Canny( img, edge, 50, 150, 3);
-    edge.convertTo(draw, CV_8U);
-    vector<Vec4i> hierarchy;
-    findContours( draw, contours, hierarchy, RETR_TREE, CHAIN_APPROX_SIMPLE ); //add contours data to vector contours
-}
-
 int main()
 {
     //tcp settings
@@ -69,66 +60,26 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    vector< vector<Point> > contours;
-    vector< vector<Point> >data;
-    int contourlen = 0;
-    int currdata = 0;
-    int start = 0;
-    int currPos;
-    int len = 0;
     
-    int counti =0;
-    
-    
-    OpenVideo myVideo(0);
+    /*OpenVideo myVideo(0);
     myVideo.setAutoExposure();
-    cout << "Capture is opened" << endl;
+    cout << "Capture is opened" << endl; */
     
     while(waitKey(10) != 'q')
     {
         
-        
-        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-        
-        for(int i =0; i< contours.size(); i++){
-            contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
-        }
-        cout<<"size of contour: "<<contourlen<<endl;
+        Point center(30,40);
+        int radius = 300;
         
         
-        while(currPos < contourlen){                          //while not entirely through the contour...
-            cout<<"CurrPos < contourlen"<<endl;
-            
-            for(int i = counti; i< contours.size(); i++){
-                
-                if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
-                   
-                    cout<<"size: "<<contours[i].size() * sizeof(Point<<end
-                    data.push_back(contours[i]);
-                    currdata += 24 + sizneof(Point) * contours[i].size();
-                }
-                else {
-                    counti = i;
-                    i = contours.size() + 1;
-                }
-                 cout<<currdata- start < contourlinesize"<<endl;
-            }
-            
-            len = currdata -  start;
-            
-            send(new_socket,&len, sizeof(int),0 );
-            send(new_socket, &data, len, 0);
-            
-            //start = currdata;
-            currPos = currdata;
-            data.clear();            //erase first chunk of data sent
-            
-        }
-        currPos = 0;
-        currdata =0;
-        counti =0;
+        send(new_socket, &center, sizeof(Point),0);
         
+        send(new_socket, &radius, sizeof(int),0);
+        
+       
     }
+        
+        
     return 0;
     
 }

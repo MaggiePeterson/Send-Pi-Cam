@@ -98,7 +98,7 @@ int main()
             
             for(int i = counti; i< contours.size(); i++){
                 
-                while (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
+                if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
                     data.push_back(contours[i]);
                     currdata += sizeof(Point) * contours[i].size();
                 }

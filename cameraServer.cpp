@@ -60,27 +60,39 @@ int main()
         exit(EXIT_FAILURE);
     }
     
+    Mat currImg;
+    int datalen = 0;
+    int packetSize = 0;
+    int currPos =0;
+    int currPacket=0;
+    Size imageSize;
+    OpenVideo myVideo(0);
+    myVideo.ChangeExposure();
+    cout << "Capture is opened" << endl;
     
-    /*OpenVideo myVideo(0);
-    myVideo.setAutoExposure();
-    cout << "Capture is opened" << endl; */
-    
-    Point center(300,400);
-    int radius = 300;
-    Rect rex(550,770,600,280);
     
     while(waitKey(10) != 'q')
     {
+         currImg = myVideo.getImage();
         
-        
-        send(new_socket, &center, sizeof(Point),0);
-        send(new_socket, &radius, sizeof(int),0);
-        
-        send(new_socket, &rex, sizeof(Rect),0);
-        
+         imageSize = currImg.size();
        
-    }
+         datalen = imageSize.width * imageSize.height * 3;
+         packetSize = imageSize.width;
+       
+       
+        while(currPos < datalen)
+        {
+            if(currPos + packetSize > datalen)
+                currPacket = datalen - currPos;
+            else
+                currPacket = packetSize;
+            
+            send(new_socket, currImg.data + currPos, currPacket, 0);
+            currPos += currPacket;
+        }
         
+    }
         
     return 0;
     

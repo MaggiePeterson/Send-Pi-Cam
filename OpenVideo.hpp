@@ -18,7 +18,7 @@
 #include "opencv2/videoio.hpp"
 
 #include <iostream>
-#include "libuvc.h" //has to be libuvc/libuvc.h in pi
+#include "libuvc/libuvc.h" //has to be libuvc/libuvc.h in pi
 #include <stdio.h>
 #include <unistd.h>
 

@@ -73,12 +73,14 @@ int main()
         s_max,
         v_min,
         v_max;
+    vector<int> HSV (6);
 
     
     
     OpenVideo myVideo(0);
     myVideo.ChangeExposure();
     cout << "Capture is opened" << endl;
+    
     
     
     while(waitKey(10) != 'q')
@@ -100,19 +102,14 @@ int main()
             currPos += currPacket;
         }
         
-        read(new_socket, &h_min, sizeof(int),0 );
-        read(new_socket, &h_max, sizeof(int),0 );
-        read(new_socket, &s_min, sizeof(int),0 )
-        read(new_socket, &s_max, sizeof(int),0 );
-        read(new_socket, &v_min, sizeof(int),0 );
-        read(new_socket, &v_max, sizeof(int),0 );
+        read(new_socket, &HSV, sizeof(int) * 6);
         
-        cout<<"HMIN"<<h_min<<endl;
-         cout<<"HMax"<<h_max<<endl;
-         cout<<"SMIN"<<s_min<<endl;
-         cout<<"SMAX"<<s_max<<endl;
-         cout<<"VMIN"<<v_min<<endl;
-         cout<<"VMAX"<<v_max<<endl;
+        cout<<"HMIN  "<<HSV[0]<<endl;
+        cout<<"HMax  "<<HSV[1]<<endl;
+        cout<<"SMIN  "<<HSV[2]<<endl;
+        cout<<"SMAX  "<<HSV[3]<<endl;
+        cout<<"VMIN  "<<HSV[4]<<endl;
+        cout<<"VMAX  "<<HSV[5]<<endl;
         
     }
         

@@ -33,11 +33,11 @@ public:
     Mat* getH();
     Mat* getS();
     Mat* getV();
+    int h_min, h_max, s_min, s_max, v_min, v_max; // for regular threshold
 
 private:
 
     Mat *h, *s, *v;
-    int h_min, h_max, s_min, s_max, v_min, v_max; // for regular threshold
     const static int MAX_BINARY_VALUE = 255;
     const static int BINARY            = 0; // set to 255 if greater than min value
     const static int TO_ZERO           = 3; // set to 0 if less than min value

@@ -73,13 +73,15 @@ int main()
         s_max,
         v_min,
         v_max;
+    Filter brita;
+    string filename = "home/pi/send-Pi-Cam";
 
     OpenVideo myVideo(0);
     cout << "Capture is opened" << endl;
     
     
     
-    while(waitKey(10) != 'q')
+    if (!myFilter.readHSV(filename))            //if HSV file is not created
     {
          currImg = myVideo.getImage();
          imageSize = currImg.size();
@@ -98,21 +100,25 @@ int main()
             currPos += currPacket;
         }
         
-        read(new_socket, &h_min, sizeof(int));
-        read(new_socket, &h_max, sizeof(int));
-        read(new_socket, &s_min, sizeof(int));
-        read(new_socket, &s_max, sizeof(int));
-        read(new_socket, &v_min, sizeof(int));
-        read(new_socket, &v_max, sizeof(int));
+        read(new_socket, &brita.h_min, sizeof(int));
+        read(new_socket, &brita.h_max, sizeof(int));
+        read(new_socket, &brita.s_min, sizeof(int));
+        read(new_socket, &brita.s_max, sizeof(int));
+        read(new_socket, &brita.v_min, sizeof(int));
+        read(new_socket, &brita.v_max, sizeof(int));
         
-        cout<<"HMIN  "<< h_min <<endl;
-        cout<<"HMax  "<< h_max <<endl;
-        cout<<"SMIN  "<< s_min <<endl;
-        cout<<"SMAX  "<< s_max <<endl;
-        cout<<"VMIN  "<< v_min <<endl;
-        cout<<"VMAX  "<< v_max <<endl;
+        cout<<"HMIN  "<< brita.h_min <<endl;
+        cout<<"HMax  "<< brita.h_max <<endl;
+        cout<<"SMIN  "<< brita.s_min <<endl;
+        cout<<"SMAX  "<< brita.s_max <<endl;
+        cout<<"VMIN  "<< brita.v_min <<endl;
+        cout<<"VMAX  "<< brita.v_max <<endl;
+        
+         myFilter.writeHSV(filename);
         
     }
+    
+    
         
     return 0;
     

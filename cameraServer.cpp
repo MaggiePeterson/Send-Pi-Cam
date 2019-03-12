@@ -69,7 +69,7 @@ int main()
         currPacket=0,
         radius1,
         radius2;
-    Point circle1, circle2;
+    Point2f circle1, circle2;
     
     Size imageSize;
     Filter brita;
@@ -141,10 +141,6 @@ int main()
         Mat drawing = Mat::zeros(edges.size(), CV_8UC3 ); //
         for( int i = 0; i< contours.size(); i++ )
         {
-            Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-            drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
-            rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
-            circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
             
             if (radius[i]> radius1)             //gets 2 largest radii
             {

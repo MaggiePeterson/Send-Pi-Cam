@@ -1,13 +1,14 @@
 //
 //  OpenVideo.cpp
-//  cameraSettingsLibUVC
+//  VisionProcessing2019
 //
-//  Created by Margaret Peterson on 11/10/18.
-//  Copyright © 2018 Margaret Peterson. All rights reserved.
+//  Created by Margaret Peterson on 1/14/19.
+//  Copyright © 2019 Margaret Peterson. All rights reserved.
 //
 
-#include <stdio.h>
 #include "OpenVideo.hpp"
+
+#include <stdio.h>
 char keyboard; //input from keyboard
 
 /* This callback function runs once per frame. Use it to perform any
@@ -38,20 +39,14 @@ void OpenVideo::cb(uvc_frame_t *frame, void *ptr) {
 
 OpenVideo::OpenVideo(int camNum){
     this->webCamIndex = camNum;
-    this->capture = new VideoCapture(this->webCamIndex); //CAUSES ERROR
-   
-}
-
-void OpenVideo::setAutoExposure(){
-    this->capture->set(CV_CAP_PROP_AUTO_EXPOSURE,0);
-    cout<<"AUTO EXPOSURE"<<endl; 
+    this->ChangeExposure();
+    this->capture = new VideoCapture(this->webCamIndex);        //XCODE CRASHED FOR INFO.PLIST ERROR
     if(!this->capture->isOpened()){
         //error in opening the video input
         cerr << "Unable to open video file: " << webCamIndex << endl;
         exit(EXIT_FAILURE);
     }
 }
-
 
 void OpenVideo::ChangeExposure(void) {
     uvc_context_t *ctx;
@@ -124,18 +119,13 @@ void OpenVideo::ChangeExposure(void) {
     /* Close the UVC context. This closes and cleans up any existing device handles,
      * and it closes the libusb context if one was not provided. */
     uvc_exit(ctx);
-    sleep(3);
     puts("UVC exited");
-    
-    if(!this->capture->isOpened()){
-        //error in opening the video input
-        cerr << "Unable to open video file: " << webCamIndex << endl;
-        exit(EXIT_FAILURE);
-    }
+    sleep(3);
 }
 
 Mat OpenVideo::getImage(){
     static Mat image;
+    
     if(!this->capture->read(image)) {
         cerr << "Unable to read next frame." << endl;
         cerr << "Exiting..." << endl;
@@ -143,3 +133,4 @@ Mat OpenVideo::getImage(){
     }
     return image;
 }
+

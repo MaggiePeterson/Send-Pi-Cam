@@ -67,21 +67,13 @@ int main()
     int currPos =0;
     int currPacket=0;
     Size imageSize;
-    int h_min,
-        h_max,
-        s_min,
-        s_max,
-        v_min,
-        v_max;
     Filter brita;
-    string filename = "home/pi/send-Pi-Cam";
+    const string filename = "home/pi/send-Pi-Cam";
 
     OpenVideo myVideo(0);
     cout << "Capture is opened" << endl;
     
-    
-    
-    if (!myFilter.readHSV(filename))            //if HSV file is not created
+    if (!brita.readHSV(filename))            //if HSV file is not created
     {
          currImg = myVideo.getImage();
          imageSize = currImg.size();
@@ -114,12 +106,10 @@ int main()
         cout<<"VMIN  "<< brita.v_min <<endl;
         cout<<"VMAX  "<< brita.v_max <<endl;
         
-         myFilter.writeHSV(filename);
+         brita.writeHSV(filename);
         
     }
-    
-    
-        
+
     return 0;
     
 }

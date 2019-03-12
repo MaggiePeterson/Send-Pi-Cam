@@ -61,22 +61,30 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    Mat currImg;
-    int datalen = 0;
-    int packetSize = 0;
-    int currPos =0;
-    int currPacket=0;
+    Mat image;
+    Mat edges;
+    int datalen = 0,
+        packetSize = 0,
+        currPos =0,
+        currPacket=0,
+        radius1,
+        radius2;
+    Point circle1, circle2;
+    
     Size imageSize;
     Filter brita;
-    const string filename = "home/pi/send-Pi-Cam";
+    const string filename = "home/pi/send-Pi-Cam.txt";
+    
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
 
     OpenVideo myVideo(0);
     cout << "Capture is opened" << endl;
     
     if (!brita.readHSV(filename))            //if HSV file is not created
     {
-         currImg = myVideo.getImage();
-         imageSize = currImg.size();
+         image = myVideo.getImage();
+         imageSize = image.size();
          datalen = imageSize.width * imageSize.height * 3;
          packetSize = imageSize.width;
        
@@ -88,7 +96,7 @@ int main()
             else
                 currPacket = packetSize;
             
-            send(new_socket, currImg.data + currPos, currPacket, 0);
+            send(new_socket, image.data + currPos, currPacket, 0);
             currPos += currPacket;
         }
         
@@ -99,17 +107,63 @@ int main()
         read(new_socket, &brita.v_min, sizeof(int));
         read(new_socket, &brita.v_max, sizeof(int));
         
-        cout<<"HMIN  "<< brita.h_min <<endl;
-        cout<<"HMax  "<< brita.h_max <<endl;
-        cout<<"SMIN  "<< brita.s_min <<endl;
-        cout<<"SMAX  "<< brita.s_max <<endl;
-        cout<<"VMIN  "<< brita.v_min <<endl;
-        cout<<"VMAX  "<< brita.v_max <<endl;
+        cout<<"H MIN  "<< brita.h_min <<endl;
+        cout<<"H Max  "<< brita.h_max <<endl;
+        cout<<"S MIN  "<< brita.s_min <<endl;
+        cout<<"S MAX  "<< brita.s_max <<endl;
+        cout<<"V MIN  "<< brita.v_min <<endl;
+        cout<<"V MAX  "<< brita.v_max <<endl;
         
          brita.writeHSV(filename);
         
     }
-
+    
+    while(1){
+        image = myVideo.getImage();
+        edges = brita.edgeDetect(&image);
+        
+        /// Find contours
+        findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
+        
+        // Approximate contours to polygons + get bounding rects and circles
+        vector<vector<Point> > contours_poly( contours.size() );
+        vector<Rect> boundRect( contours.size() );
+        vector<Point2f>center( contours.size() );
+        vector<float>radius( contours.size() );
+        
+        for( int i = 0; i < contours.size(); i++ )
+        { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+            boundRect[i] = boundingRect( Mat(contours_poly[i]) );
+            minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+        }
+        
+        /// Draw polygonal contour + bonding rects + circles
+        Mat drawing = Mat::zeros(edges.size(), CV_8UC3 ); //
+        for( int i = 0; i< contours.size(); i++ )
+        {
+            Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
+            drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+            rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+            circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+            
+            if (radius[i]> radius1)             //gets 2 largest radii
+            {
+                radius2 = radius1;
+                radius1 = radius[i];
+                center1 = center[i];
+            }
+            else if (radius[i] > radius2){
+                radius2 = radius[i];
+                center2 = center[i];
+            }
+           
+    }
+        send(new_socket, &center1, sizeof(Point),0);
+        send(new_socket, &radius1, sizeof(int),0);
+        send(new_socket, &center2, sizeof(Point),0);
+        send(new_socket, &radius2, sizeof(int),0);
+    }
+    
     return 0;
     
 }

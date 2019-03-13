@@ -64,16 +64,17 @@ int main()
     Mat image(600,800,CV_8UC3);
     Mat edges(600,800,CV_8UC3);
     int datalen = 0,
-    packetSize = 0,
-    currPos =0,
-    currPacket=0,
-    radius1,
-    radius2;
+        packetSize = 0,
+        currPos =0,
+        currPacket=0,
+        radius1,
+        radius2;
     Point2f center1, center2;
+    Rect rect1, rect2;
     
     Size imageSize;
     Filter brita;
-    const string filename = "home/pi/send-Pi-Cam.txt";
+    const string filename = "home/pi/send-Pi-Cam.txt";                      //need to get this to save
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -89,7 +90,7 @@ int main()
         packetSize = imageSize.width;
         
         
-        while(currPos < datalen)
+        while(currPos < datalen)            //send one image to config values on client side
         {
             if(currPos + packetSize > datalen)
                 currPacket = datalen - currPos;
@@ -100,7 +101,7 @@ int main()
             currPos += currPacket;
         }
         
-        read(new_socket, &brita.h_min, sizeof(int));
+        read(new_socket, &brita.h_min, sizeof(int));    //get HSV values from trackbar on client side
         read(new_socket, &brita.h_max, sizeof(int));
         read(new_socket, &brita.s_min, sizeof(int));
         read(new_socket, &brita.s_max, sizeof(int));
@@ -120,11 +121,10 @@ int main()
     
     while(waitKey(100) != 'q'){
         
-        edges = brita.edgeDetect(&myVideo.getImage());
+        
         while(waitKey(100) != 'q'){
             cout<<"making bounding"<<endl;
-            image = myVideo.getImage();
-            edges = brita.edgeDetect(&image);
+            edges = brita.edgeDetect(&myVideo.getImage());  //edge detect
             
             
             /// Find contours
@@ -143,11 +143,10 @@ int main()
             }
             
             /// Draw polygonal contour + bonding rects + circles
-            Mat drawing = Mat::zeros(edges.size(), CV_8UC3 ); //
             for( int i = 0; i< contours.size(); i++ )
             {
                 
-                if (radius[i]> radius1)             //gets 2 largest radii
+                if (radius[i]> radius1)             //gets 2 largest circles
                 {
                     radius2 = radius1;
                     radius1 = radius[i];
@@ -158,11 +157,27 @@ int main()
                     center2 = center[i];
                 }
                 
+                if (boundRect[i].area()> rect1.area())             //gets 2 largest rect
+                {
+                    rect2 = rect1;
+                    rect1 = boundRect[i];
+                    
+                }
+                else if (boundRect[i].area()> rect2.area()){
+                   rect2 = boundRect[i];
+                }
+                
             }
-            send(new_socket, &center1, sizeof(Point2f),0);
+            send(new_socket, &center1, sizeof(Point2f),0);     //send info to draw circle
             send(new_socket, &radius1, sizeof(int),0);
             send(new_socket, &center2, sizeof(Point2f),0);
             send(new_socket, &radius2, sizeof(int),0);
+            
+            send(new_socket, &rect1, sizeof(Rect), 0);          //send info to draw rect
+            send(new_socket, &rect2, sizeof(Rect), 0);
+            
+            
+            
         }
         
         return 0;

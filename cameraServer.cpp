@@ -64,11 +64,11 @@ int main()
     Mat image(600,800,CV_8UC3);
     Mat edges(600,800,CV_8UC3);
     int datalen = 0,
-        packetSize = 0,
-        currPos =0,
-        currPacket=0,
-        radius1,
-        radius2;
+    packetSize = 0,
+    currPos =0,
+    currPacket=0,
+    radius1,
+    radius2;
     Point2f center1, center2;
     Rect rect1, rect2;
     
@@ -121,66 +121,61 @@ int main()
     
     while(waitKey(100) != 'q'){
         
+        cout<<"making bounding"<<endl;
+        image = myVideo.getImage();
+        edges = brita.edgeDetect(&image);
         
-        while(waitKey(100) != 'q'){
-            cout<<"making bounding"<<endl;
-            edges = brita.edgeDetect(&myVideo.getImage());  //edge detect
-            
-            
-            /// Find contours
-            findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
-            
-            // Approximate contours to polygons + get bounding rects and circles
-            vector<vector<Point> > contours_poly( contours.size() );
-            vector<Rect> boundRect( contours.size() );
-            vector<Point2f>center( contours.size() );
-            vector<float>radius( contours.size() );
-            
-            for( int i = 0; i < contours.size(); i++ )
-            { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-                boundRect[i] = boundingRect( Mat(contours_poly[i]) );
-                minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
-            }
-            
-            /// Draw polygonal contour + bonding rects + circles
-            for( int i = 0; i< contours.size(); i++ )
-            {
-                
-                if (radius[i]> radius1)             //gets 2 largest circles
-                {
-                    radius2 = radius1;
-                    radius1 = radius[i];
-                    center1 = center[i];
-                }
-                else if (radius[i] > radius2){
-                    radius2 = radius[i];
-                    center2 = center[i];
-                }
-                
-                if (boundRect[i].area()> rect1.area())             //gets 2 largest rect
-                {
-                    rect2 = rect1;
-                    rect1 = boundRect[i];
-                    
-                }
-                else if (boundRect[i].area()> rect2.area()){
-                   rect2 = boundRect[i];
-                }
-                
-            }
-            send(new_socket, &center1, sizeof(Point2f),0);     //send info to draw circle
-            send(new_socket, &radius1, sizeof(int),0);
-            send(new_socket, &center2, sizeof(Point2f),0);
-            send(new_socket, &radius2, sizeof(int),0);
-            
-            send(new_socket, &rect1, sizeof(Rect), 0);          //send info to draw rect
-            send(new_socket, &rect2, sizeof(Rect), 0);
-            
-            
-            
+        /// Find contours
+        findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
+        
+        // Approximate contours to polygons + get bounding rects and circles
+        vector<vector<Point> > contours_poly( contours.size() );
+        vector<Rect> boundRect( contours.size() );
+        vector<Point2f>center( contours.size() );
+        vector<float>radius( contours.size() );
+        
+        for( int i = 0; i < contours.size(); i++ )
+        { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+            boundRect[i] = boundingRect( Mat(contours_poly[i]) );
+            minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
         
-        return 0;
+        /// Draw polygonal contour + bonding rects + circles
+        for( int i = 0; i< contours.size(); i++ )
+        {
+            
+            if (radius[i]> radius1)             //gets 2 largest circles
+            {
+                radius2 = radius1;
+                radius1 = radius[i];
+                center1 = center[i];
+            }
+            else if (radius[i] > radius2){
+                radius2 = radius[i];
+                center2 = center[i];
+            }
+            
+            if (boundRect[i].area()> rect1.area())             //gets 2 largest rect
+            {
+                rect2 = rect1;
+                rect1 = boundRect[i];
+                
+            }
+            else if (boundRect[i].area()> rect2.area()){
+                rect2 = boundRect[i];
+            }
+            
+        }
+        send(new_socket, &center1, sizeof(Point2f),0);     //send info to draw circle
+        send(new_socket, &radius1, sizeof(int),0);
+        send(new_socket, &center2, sizeof(Point2f),0);
+        send(new_socket, &radius2, sizeof(int),0);
+        
+        send(new_socket, &rect1, sizeof(Rect), 0);          //send info to draw rect
+        send(new_socket, &rect2, sizeof(Rect), 0);
         
     }
+    return 0;
+    
+}
 

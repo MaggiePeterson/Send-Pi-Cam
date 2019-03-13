@@ -61,15 +61,15 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    Mat image;
-    Mat edges;
+    Mat image(600,800,CV_8UC3);
+    Mat edges(600,800,CV_8UC3);
     int datalen = 0,
-        packetSize = 0,
-        currPos =0,
-        currPacket=0,
-        radius1,
-        radius2;
-    Point2f circle1, circle2;
+    packetSize = 0,
+    currPos =0,
+    currPacket=0,
+    radius1,
+    radius2;
+    Point2f center1, center2;
     
     Size imageSize;
     Filter brita;
@@ -77,18 +77,18 @@ int main()
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
-
+    
     OpenVideo myVideo(0);
     cout << "Capture is opened" << endl;
     
     if (!brita.readHSV(filename))            //if HSV file is not created
     {
-         image = myVideo.getImage();
-         imageSize = image.size();
-         datalen = imageSize.width * imageSize.height * 3;
-         packetSize = imageSize.width;
-       
-       
+        image = myVideo.getImage();
+        imageSize = image.size();
+        datalen = imageSize.width * imageSize.height * 3;
+        packetSize = imageSize.width;
+        
+        
         while(currPos < datalen)
         {
             if(currPos + packetSize > datalen)
@@ -114,56 +114,58 @@ int main()
         cout<<"V MIN  "<< brita.v_min <<endl;
         cout<<"V MAX  "<< brita.v_max <<endl;
         
-         brita.writeHSV(filename);
+        brita.writeHSV(filename);
         
     }
     
-    while(1){
-        image = myVideo.getImage();
-        edges = brita.edgeDetect(&image);
+    while(waitKey(100) != 'q'){
         
-        /// Find contours
-        findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
-        
-        // Approximate contours to polygons + get bounding rects and circles
-        vector<vector<Point> > contours_poly( contours.size() );
-        vector<Rect> boundRect( contours.size() );
-        vector<Point2f>center( contours.size() );
-        vector<float>radius( contours.size() );
-        
-        for( int i = 0; i < contours.size(); i++ )
-        { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-            boundRect[i] = boundingRect( Mat(contours_poly[i]) );
-            minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+        edges = brita.edgeDetect(&myVideo.getImage());
+        while(waitKey(100) != 'q'){
+            cout<<"making bounding"<<endl;
+            image = myVideo.getImage();
+            edges = brita.edgeDetect(&image);
+            
+            
+            /// Find contours
+            findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
+            
+            // Approximate contours to polygons + get bounding rects and circles
+            vector<vector<Point> > contours_poly( contours.size() );
+            vector<Rect> boundRect( contours.size() );
+            vector<Point2f>center( contours.size() );
+            vector<float>radius( contours.size() );
+            
+            for( int i = 0; i < contours.size(); i++ )
+            { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
+                boundRect[i] = boundingRect( Mat(contours_poly[i]) );
+                minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+            }
+            
+            /// Draw polygonal contour + bonding rects + circles
+            Mat drawing = Mat::zeros(edges.size(), CV_8UC3 ); //
+            for( int i = 0; i< contours.size(); i++ )
+            {
+                
+                if (radius[i]> radius1)             //gets 2 largest radii
+                {
+                    radius2 = radius1;
+                    radius1 = radius[i];
+                    center1 = center[i];
+                }
+                else if (radius[i] > radius2){
+                    radius2 = radius[i];
+                    center2 = center[i];
+                }
+                
+            }
+            send(new_socket, &center1, sizeof(Point2f),0);
+            send(new_socket, &radius1, sizeof(int),0);
+            send(new_socket, &center2, sizeof(Point2f),0);
+            send(new_socket, &radius2, sizeof(int),0);
         }
         
-        /// Draw polygonal contour + bonding rects + circles
-        Mat drawing = Mat::zeros(edges.size(), CV_8UC3 ); //
-        for( int i = 0; i< contours.size(); i++ )
-        {
-            
-            if (radius[i]> radius1)             //gets 2 largest radii
-            {
-                radius2 = radius1;
-                radius1 = radius[i];
-                center1 = center[i];
-            }
-            else if (radius[i] > radius2){
-                radius2 = radius[i];
-                center2 = center[i];
-            }
-           
+        return 0;
+        
     }
-        send(new_socket, &center1, sizeof(Point),0);
-        send(new_socket, &radius1, sizeof(int),0);
-        send(new_socket, &center2, sizeof(Point),0);
-        send(new_socket, &radius2, sizeof(int),0);
-    }
-    
-    return 0;
-    
-}
-
-
-
 

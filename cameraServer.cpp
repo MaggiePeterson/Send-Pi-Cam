@@ -69,70 +69,43 @@ int main()
         exit(EXIT_FAILURE);
     }
     
-    vector< vector<Point> > contours;
-    vector< vector<Point> >data;
-    int contourlen = 0;
-    int currdata = 0;
-    int start = 0;
-    int currPos;
-    int len = 0;
+    Point pt(2,200);
+    Point pt2(120,400);
+    Point pt3(40,500);
+    Point pt4(200,70);
+    Point pt5(3,70);
+    Point pt6(56,340);
     
-    int counti =0;
+    
+    vector< vector<Point> > contours = { {pt,pt2,pt3}, {pt3,pt4}, {pt5,pt6} };
+
+    int len = 3;
+    int sub_vector;
     int size =0;
     
     
-    OpenVideo myVideo(0);
-    myVideo.setAutoExposure();
+//    OpenVideo myVideo(0);
+//    myVideo.setAutoExposure();
     cout << "Capture is opened" << endl;
     
     while(waitKey(10) != 'q')
     {
         
         
-        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        //writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        uint32_t number_vectors = contours.size();
+        send(new_socket, &number_vectors, sizeof number_vectors, 0);
         
-        len  = contours.size();
-        send(new_socket, &len, sizeof(int),0);
-        
-        
-        for(int i =0; i< contours.size(); i++){
+        for (auto const& sub_vector : contours)
+        {
+            // First send the number of elements
+            uint32_t number_elements = sub_vector.size();
+            send(new_socket, &number_elements, sizeof number_elements, 0);
             
-            size = (contours[i].size() * 8) + 24;
-            
-            send(new_socket, &size, sizeof(int), 0);
-            send(new_socket, &contours[i], size, 0);
+            // Then send the actual data
+            send(new_socket, sub_vector.data(), sub_vector.size() * sizeof sub_vector[0], 0);
         }
         
-        /*  for(int i =0; i< contours.size(); i++){
-         contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
-         }
-         
-         while(currPos < contourlen ){                          //while not entirely through the contour...
-         
-         for(int i = counti; i< contours.size(); i++){
-         
-         if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
-         data.push_back(contours[i]);
-         currdata += sizeof(Point) * contours[i].size();
-         }
-         counti = i;
-         
-         }
-         
-         
-         currPos += currdata;
-         len = currdata -  start;
-         
-         send(new_socket,&currdata, sizeof(int),0 );
-         send(new_socket, &data, len, 0);
-         
-         start = currdata;
-         data.clear();            //erase first chunk of data sent
-         
-         }
-         currPos = 0;
-         currdata =0;
-         counti =0; */
         
     }
     return 0;

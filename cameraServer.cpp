@@ -78,6 +78,7 @@ int main()
     int len = 0;
     
     int counti =0;
+    int size =0;
     
     
     OpenVideo myVideo(0);
@@ -90,36 +91,48 @@ int main()
         
         writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
         
+        len  = contours.size();
+        send(new_socket, &len, sizeof(int),0);
+        
+        
         for(int i =0; i< contours.size(); i++){
-            contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
+            
+            size = (contours[i].size() * 8) + 24;
+            
+            send(new_socket, &size, sizeof(int), 0);
+            send(new_socket, &contours[i], size, 0);
         }
         
-        while(currPos < contourlen ){                          //while not entirely through the contour...
-            
-            for(int i = counti; i< contours.size(); i++){
-                
-                if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
-                    data.push_back(contours[i]);
-                    currdata += sizeof(Point) * contours[i].size();
-                }
-                counti = i;
-                
-            }
-            
-            
-            currPos += currdata;
-            len = currdata -  start;
-            
-            send(new_socket,&currdata, sizeof(int),0 );
-            send(new_socket, &data, len, 0);
-            
-            start = currdata;
-            data.clear();            //erase first chunk of data sent
-            
-        }
-        currPos = 0;
-        currdata =0;
-        counti =0;
+        /*  for(int i =0; i< contours.size(); i++){
+         contourlen +=  sizeof(Point) * contours[i].size();    //data len is the size of the entire contour
+         }
+         
+         while(currPos < contourlen ){                          //while not entirely through the contour...
+         
+         for(int i = counti; i< contours.size(); i++){
+         
+         if (currdata - start <= 1000 - (contours[i].size() * sizeof(Point))){
+         data.push_back(contours[i]);
+         currdata += sizeof(Point) * contours[i].size();
+         }
+         counti = i;
+         
+         }
+         
+         
+         currPos += currdata;
+         len = currdata -  start;
+         
+         send(new_socket,&currdata, sizeof(int),0 );
+         send(new_socket, &data, len, 0);
+         
+         start = currdata;
+         data.clear();            //erase first chunk of data sent
+         
+         }
+         currPos = 0;
+         currdata =0;
+         counti =0; */
         
     }
     return 0;

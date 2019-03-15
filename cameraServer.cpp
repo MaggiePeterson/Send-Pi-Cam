@@ -68,43 +68,62 @@ int main()
         perror("accept");
         exit(EXIT_FAILURE);
     }
+   
+    vector< vector<Point> > contours;
+    vector<Point> bag;
+    int currdata =0;
+    int currPos =0;
+    int datalen =0;
+    int len =0;
+    int sub =0;
     
-    Point pt(2,200);
-    Point pt2(120,400);
-    Point pt3(40,500);
-    Point pt4(200,70);
-    Point pt5(3,70);
-    Point pt6(56,340);
-    
-    
-    vector< vector<Point> > contours = { {pt,pt2,pt3}, {pt3,pt4}, {pt5,pt6} };
-
-    int len = 3;
-    int sub_vector;
-    int size =0;
-    
-    
-//    OpenVideo myVideo(0);
-//    myVideo.setAutoExposure();
+    OpenVideo myVideo(0);
+    myVideo.setAutoExposure();
     cout << "Capture is opened" << endl;
     
     while(waitKey(10) != 'q')
     {
         
         
-        //writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
-        uint32_t number_vectors = contours.size();
-        send(new_socket, &number_vectors, sizeof number_vectors, 0);
+        writeEdges(myVideo.getImage(), contours); //saves image edges to vector contours
+        //len = contours.size();
         
-        for (auto const& sub_vector : contours)
-        {
-            // First send the number of elements
-            uint32_t number_elements = sub_vector.size();
-            send(new_socket, &number_elements, sizeof number_elements, 0);
-            
-            // Then send the actual data
-            send(new_socket, sub_vector.data(), sub_vector.size() * sizeof sub_vector[0], 0);
+      //  send(new_socket, &len, sizeof(int),0);      //send length of contour
+        
+        for(int i=0; i< contours.size(); i++){
+            datalen += contours[i].size() * sizeof(Point);
         }
+        
+        send(new_socket, &datalen, sizeof(int),0);
+        
+        
+            for(const auto &line : contours){
+                for (const auto &points : lines){
+                    if(currdata + sizeof(Point) < 1000 - sizeof(Point)){
+                        bag.push_back(points);
+                        currdata += sizeof(Point);
+                    }
+                    else {
+                        bag.push_back(points);
+                        currdata += sizeof(Point);      //add that point
+                        send(new_socket,&currdata, sizeof(int),0);
+                         send(new_socket, contours.data(), currdata,0);      //send data
+                         //currPos += currdata;
+                         currdata= 0;
+                         bag.clear();
+                    }
+                }
+            }
+        
+  /*      for(int i=0; i<contours.size();i++){
+            
+            sub = contours[i].size()
+            send(new_socket, &sub, sizeof(int),0);
+
+        }*/
+         //currPos =0;
+                 
+ 
         
         
     }

@@ -166,6 +166,9 @@ int main()
             }
             
         }
+
+	 cout<<radius1<<" radius"<<endl;
+	
         send(new_socket, &center1, sizeof(Point2f),0);     //send info to draw circle
         send(new_socket, &radius1, sizeof(int),0);
         send(new_socket, &center2, sizeof(Point2f),0);

@@ -31,9 +31,10 @@ public:
     void drawBoundingBox(Mat *img);
     void calibrateZero(Mat *img, float dist);
     void configValues(Mat *img, float dist);
-    int getAngle();
-    float getDistance();
-    void saveToFile(string textFile);
+    int angle();
+    float distance();
+    void writeMetrics(string textFile);
+    bool readMetrics(string filename);
     
 private:
     vector<float>radiusX;
@@ -43,7 +44,7 @@ private:
     int FOV;
     float zeroDist;
     Mat imgAtZero;
-    int angle;
+    int angl;
     float radius1, radius2;
     
 };

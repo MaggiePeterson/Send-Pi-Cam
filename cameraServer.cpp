@@ -128,7 +128,7 @@ int main()
         edges = brita.edgeDetect(&image);
         
         myMetrics.drawBoundingBox(&edges);
-        angle = myMetrics.getAngle();
+        angle = myMetrics.angle();
         
         send(new_socket, &angle, sizeof(int),0);
         

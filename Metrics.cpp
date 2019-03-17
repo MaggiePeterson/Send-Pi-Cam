@@ -63,6 +63,7 @@ void Metrics:: drawBoundingBox(Mat *image){
         {
             this->radius2 = radius1;
             this->radius1 = radius[i];
+            center2 = center1;
             center1 = center[i].x;
         }
         else if (radius[i] > radius2){
@@ -70,16 +71,16 @@ void Metrics:: drawBoundingBox(Mat *image){
             center2 = center[i].x;
         }
         
-       
-        
     }
-    midpoint = abs(center1-center2)/2;           //midpoint of 2 targets
-    this->angle = this->FOV * (abs((this->frameW/2) - midpoint))/this->frameW; //angle = field of view * x offset of the midpoint of targets, divided by the total frame pixel width
+    
+    midpoint = (center1+center2)/2;           //midpoint of 2 targets
+    this->angl = this->FOV * (abs((this->frameW/2) - midpoint))/this->frameW; //angle = field of view * x offset of the midpoint of targets, divided by the total frame pixel width
     
 }
 
 void Metrics:: calibrateZero(Mat *img, float dist){
-    
+    cout<<"METRICS: Calibrating to Zero; dist: "<<dist<<endl;
+    drawBoundingBox(img);
     this->radiusX.push_back(radius1);
     this->radiusX.push_back(radius2);
     this->distY.push_back(0);
@@ -89,7 +90,8 @@ void Metrics:: calibrateZero(Mat *img, float dist){
 }
 
 void Metrics::configValues(Mat *img, float dist){
-    
+    cout<<"METRICS: Config; dist: "<<dist<<endl;
+    drawBoundingBox(img);
     this->radiusX.push_back(radius1);
     this->radiusX.push_back(radius2);
     this->distY.push_back(dist);
@@ -124,28 +126,47 @@ float Metrics:: lineOfRegression(float rad1, float rad2){
     return dist;
 }
 
-float Metrics::getDistance(){
+float Metrics::distance(){
     
     return lineOfRegression(radius1, radius2);
 }
 
-int Metrics:: getAngle(){
-    return this->angle;
+int Metrics:: angle(){
+    return this->angl;
 }
 
-void Metrics:: saveToFile(string textFile){
+void Metrics:: writeMetrics(string textFile){
     
     ofstream myFile;
     myFile.open(textFile);
     
-    myFile<< "Radius" << "," << "Distance"<<endl;
+    myFile << radiusX.size() <<endl;
     for(int i =0; i< this->radiusX.size(); i++){
-        myFile<< this->radiusX[i] << "," << this->distY[i] << endl;
+        myFile<< this->radiusX[i] <<endl<<  this->distY[i] << endl;
     }
     myFile.close();
     
-    
 }
+
+bool Metrics:: readMetrics(string textFile){
+    bool read = false;
+    ifstream inFile;
+    inFile.open(textFile);
+    int size;
+    inFile>> size;
+    radiusX.resize(size);
+    distY.resize(size);
+    
+    for(int i=0; i< size; i++){
+        if(inFile >> this->radiusX[i] >> this->distY[i]){
+            read =true;
+        }
+    }
+    
+    inFile.close();
+    return read;
+}
+
 
 
 

@@ -70,10 +70,11 @@ void Metrics:: drawBoundingBox(Mat *image){
             center2 = center[i].x;
         }
         
-        midpoint = abs(center1-center2)/2;           //midpoint of 2 targets
-        this->angle = this->FOV * (abs((this->frameW/2) - midpoint))/this->frameW; //angle = field of view * x offset of the midpoint of targets, divided by the total frame pixel width
+       
         
     }
+    midpoint = abs(center1-center2)/2;           //midpoint of 2 targets
+    this->angle = this->FOV * (abs((this->frameW/2) - midpoint))/this->frameW; //angle = field of view * x offset of the midpoint of targets, divided by the total frame pixel width
     
 }
 

@@ -76,7 +76,7 @@ int main()
     
     Size imageSize;
     Filter brita;
-    Metrics myMetrics;
+    Metrics myMetrics(1280,69);
     const string filename = "home/pi/send-Pi-Cam.txt";                      //need to get this to save
     
     vector<vector<Point> > contours;
@@ -127,7 +127,7 @@ int main()
         image = myVideo.getImage();
         edges = brita.edgeDetect(&image);
         
-        myMetrics.drawBoundingBox(edges);
+        myMetrics.drawBoundingBox(&edges);
         angle = myMetrics.getAngle();
         
         send(new_socket, &angle, sizeof(int),0);

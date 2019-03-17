@@ -71,6 +71,7 @@ int main()
     radius2;
     Point2f center1, center2;
     Rect rect1, rect2;
+    vector<int> HSV(6);
     
     Size imageSize;
     Filter brita;
@@ -101,12 +102,14 @@ int main()
             currPos += currPacket;
         }
         
-        read(new_socket, &brita.h_min, sizeof(int));    //get HSV values from trackbar on client side
-        read(new_socket, &brita.h_max, sizeof(int));
-        read(new_socket, &brita.s_min, sizeof(int));
-        read(new_socket, &brita.s_max, sizeof(int));
-        read(new_socket, &brita.v_min, sizeof(int));
-        read(new_socket, &brita.v_max, sizeof(int));
+        read(new_socket, HSV.data(), sizeof(int)*6);    //get HSV values from trackbar on client side
+        
+        brita.h_min = HSV[0];
+        brita.h_max = HSV[1];
+        brita.s_min = HSV[2];
+        brita.s_max = HSV[3];
+        brita.v_min = HSV[4];
+        brita.v_max = HSV[5];
         
         cout<<"H MIN  "<< brita.h_min <<endl;
         cout<<"H Max  "<< brita.h_max <<endl;

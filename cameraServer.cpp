@@ -72,6 +72,8 @@ int main()
     Point2f center1, center2;
     Rect rect1, rect2;
     vector<int> HSV(6);
+    int centersize =0;
+    int radiussize=0;
     
     Size imageSize;
     Filter brita;
@@ -143,6 +145,11 @@ int main()
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
         
+        centersize = center.size();
+        radiussize = radius.size();
+        
+        send(new_socket, centersize, sizeof(int),0 );
+        send(new_socket, radiussize, sizeof(int),0 );
         send(new_socket, center.data(), sizeof(Point2f)*center.size(),0);
         send(new_socket, radius.data(), sizeof(float)*radius.size(),0);
 

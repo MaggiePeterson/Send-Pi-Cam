@@ -17,9 +17,52 @@
 #include <netinet/in.h>
 
 #define PORT 8888
+#define BCAST_PORT 9999
 #define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
+
+void bCastThread(void)
+{
+    int sock;                         /* Socket */
+    struct sockaddr_in broadcastAddr; /* Broadcast address */
+    char *broadcastIP;                /* IP broadcast address */
+    char *sendString;                 /* String to broadcast */
+    int broadcastPermission = 1;          /* Socket opt to set permission to broadcast */
+    unsigned int sendStringLen;       /* Length of string to broadcast */
+    
+    cout << "bcast thread start" << endl;
+    if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+    {
+        perror("UDP socket failed");
+        exit(EXIT_FAILURE);
+    }
+    if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
+    {
+        perror("Could not set UDP permissions");
+        exit(EXIT_FAILURE);
+    }
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &broadcastPermission, sizeof(broadcastPermission)) < 0)
+    {
+        perror("Could not reuse UDP port");
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
+    broadcastAddr.sin_family = AF_INET;                 /* Internet address family */
+    broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;/* Broadcast IP address */
+    broadcastAddr.sin_port = htons(BCAST_PORT);         /* Broadcast port */
+    cout << "Starting beacon" << endl;
+    while(1)
+    {
+        sendto(sock, "Host", 4, 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+        
+        sleep(2);
+        
+    }
+}
+
 
 int main()
 {
@@ -30,6 +73,8 @@ int main()
     int addrlen = sizeof(address);
     char buffer[BUFFER_SIZE] = {0};
     const char *hello = "Hello from server";
+    
+    thread threadHolder (bCastThread);
     
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)

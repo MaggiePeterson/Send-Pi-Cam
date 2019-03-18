@@ -77,7 +77,7 @@ int main()
     Size imageSize;
     Filter brita;
     Metrics myMetrics(1280,69);
-    const string filename = "home/pi/send-Pi-Cam.txt";                      //need to get this to save
+    const string filename = "HSV.txt";                      //need to get this to save
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;

@@ -67,8 +67,8 @@ int main()
     packetSize = 0,
     currPos =0,
     currPacket=0,
-    radius1,
-    radius2;
+    radius1=0,
+    radius2=0;
     Point2f center1, center2;
     Rect rect1, rect2;
     vector<int> HSV(6);
@@ -129,7 +129,7 @@ int main()
         edges = brita.edgeDetect(&image);
         
         /// Find contours
-        findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0) ); //external
+        findContours(edges, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); //external
         
         // Approximate contours to polygons + get bounding rects and circles
         vector<vector<Point> > contours_poly( contours.size() );
@@ -143,42 +143,11 @@ int main()
             minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
         }
         
-        /// Draw polygonal contour + bonding rects + circles
-        for( int i = 0; i< contours.size(); i++ )
-        {
-            
-            if (radius[i]> radius1)             //gets 2 largest circles
-            {
-                radius2 = radius1;
-                radius1 = radius[i];
-                center1 = center[i];
-            }
-            else if (radius[i] > radius2){
-                radius2 = radius[i];
-                center2 = center[i];
-            }
-            
-            if (boundRect[i].area()> rect1.area())             //gets 2 largest rect
-            {
-                rect2 = rect1;
-                rect1 = boundRect[i];
-                
-            }
-            else if (boundRect[i].area()> rect2.area()){
-                rect2 = boundRect[i];
-            }
-            
-        }
+        send(new_socket, center.data(), sizeof(Point2f)*center.size(),0);
+        send(new_socket, radius.data(), sizeof(float)*radius.size(),0);
 
-	 cout<<radius1<<" radius"<<endl;
+    
 	
-        send(new_socket, &center1, sizeof(Point2f),0);     //send info to draw circle
-        send(new_socket, &radius1, sizeof(int),0);
-        send(new_socket, &center2, sizeof(Point2f),0);
-        send(new_socket, &radius2, sizeof(int),0);
-        
-        send(new_socket, &rect1, sizeof(Rect), 0);          //send info to draw rect
-        send(new_socket, &rect2, sizeof(Rect), 0);
         
     }
     return 0;

@@ -73,6 +73,7 @@ int main()
     Point2f center1, center2;
     Rect rect1, rect2;
     int angle;
+int dist;
     
     Size imageSize;
     Filter brita;
@@ -82,9 +83,9 @@ int main()
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
     
-    OpenVideo myVideo(0);
+    OpenVideo myVideo(1);
     cout << "Capture is opened" << endl;
-    
+cout<<brita.readHSV(filename)<<endl;    
     if (!brita.readHSV(filename))            //if HSV file is not created
     {
         image = myVideo.getImage();
@@ -92,7 +93,7 @@ int main()
         datalen = imageSize.width * imageSize.height * 3;
         packetSize = imageSize.width;
         
-        
+	cout<<"cannot read file"<<endl;        
         while(currPos < datalen)            //send one image to config values on client side
         {
             if(currPos + packetSize > datalen)
@@ -123,15 +124,15 @@ int main()
     }
     
     while(waitKey(100) != 'q'){
-        
+	cout<<"senidng metrics"<<endl;        
         image = myVideo.getImage();
         edges = brita.edgeDetect(&image);
         
         myMetrics.drawBoundingBox(&edges);
         angle = myMetrics.angle();
-        
+        dist = myMetrics.distance();
         send(new_socket, &angle, sizeof(int),0);
-        
+        send(new_socket, &dist, sizeof(int),0); 
     }
     return 0;
     

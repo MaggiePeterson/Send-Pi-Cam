@@ -53,7 +53,7 @@ bool Filter::readHSV(const string &the_file)
     ifstream inFile(the_file);
     if (inFile >> h_min >> h_max >> s_min >> s_max >> v_min >> v_max)
     {
-        getchar();
+     //   getchar();
         return true;
     }
     return false;

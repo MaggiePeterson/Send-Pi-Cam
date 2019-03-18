@@ -146,12 +146,13 @@ int main()
         }
         
         centersize = center.size();
-        radiussize = radius.size();
+	cout<<"num of circ"<<centersize<<endl;
+	cout<<"rad size"<< radius.size()<<endl;
         
-        send(new_socket, centersize, sizeof(int),0 );
-        send(new_socket, radiussize, sizeof(int),0 );
-        send(new_socket, center.data(), sizeof(Point2f)*center.size(),0);
-        send(new_socket, radius.data(), sizeof(float)*radius.size(),0);
+        send(new_socket,&centersize, sizeof(int),0 );
+  //      send(new_socket, &radiussize, sizeof(int),0 );
+       cout<<"sending centers: "<< send(new_socket, center.data(), sizeof(Point2f)*center.size(),0)<<endl;
+        cout<<"sending rad: "<<  send(new_socket, radius.data(), sizeof(float)*radius.size(),0)<<endl;
 
     
 	

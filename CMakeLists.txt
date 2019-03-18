@@ -13,6 +13,8 @@ project(opencv_example_project)
 # via the command line or GUI
 find_package(OpenCV REQUIRED)
 find_package(libuvc REQUIRED)
+find_package(Threads REQUIRED)
+
 
 
 # If the package has been found, several variables will
@@ -29,6 +31,10 @@ message(STATUS "    config: ${libuvc_DIR}")
 message(STATUS "    version: ${libvc_VERSION}")
 message(STATUS "    libraries: ${libuvc_LIBS}")
 message(STATUS "    include path: ${libuvc_INCLUDE_DIRS}")
+message(STATUS "PThread library status:")
+message(STATUS "    version: ${Threads_VERSION}")
+message(STATUS "    libraries: ${Threads_LIBS}")
+
 
 set(SOURCES OpenVideo.cpp cameraServer.cpp OpenFilter.cpp)
 set(HEADERS OpenVideo.hpp OpenFilter.hpp)
@@ -41,5 +47,5 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_executable(opencv_cam_server ${SOURCES})
 
 # Link your application with OpenCV and libuvc libraries
-target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} /usr/local/lib/arm-linux-gnueabihf/libuvc.so)
+target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} ${CMAKE_THREAD_LIBS_INIT} /usr/local/lib/arm-linux-gnueabihf/libuvc.so)
 

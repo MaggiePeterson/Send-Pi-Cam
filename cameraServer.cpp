@@ -43,11 +43,11 @@ void bCastThread(void)
         perror("Could not set UDP permissions");
         exit(EXIT_FAILURE);
     }
-    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &broadcastPermission, sizeof(broadcastPermission)) < 0)
+/*    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &broadcastPermission, sizeof(broadcastPermission)) < 0)
     {
         perror("Could not reuse UDP port");
         exit(EXIT_FAILURE);
-    }
+    }*/
     
     
     memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
@@ -123,7 +123,7 @@ int main()
     
     Size imageSize;
     Filter brita;
-    const string filename = "home/pi/send-Pi-Cam.txt";                      //need to get this to save
+    const string filename = "HSV.txt";                      //need to get this to save
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;

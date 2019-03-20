@@ -73,12 +73,14 @@ int main()
     Point2f center1, center2;
     Rect rect1, rect2;
     int angle;
-int dist;
+    int dist;
+    int key =  waitKey(100);
     
     Size imageSize;
     Filter brita;
     Metrics myMetrics(1280,69);
     const string filename = "HSV.txt";                      //need to get this to save
+    const string filename2 = "Metrics.txt";  
     
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -93,7 +95,7 @@ cout<<brita.readHSV(filename)<<endl;
         datalen = imageSize.width * imageSize.height * 3;
         packetSize = imageSize.width;
         
-	cout<<"cannot read file"<<endl;        
+        
         while(currPos < datalen)            //send one image to config values on client side
         {
             if(currPos + packetSize > datalen)
@@ -120,6 +122,38 @@ cout<<brita.readHSV(filename)<<endl;
         cout<<"V MAX  "<< brita.v_max <<endl;
         
         brita.writeHSV(filename);
+        
+    }
+    
+    if(!myMetrics.readMetrics()){
+        image = myVideo.getImage();
+        edges = brita.edgeDetect(&image);
+        imageSize = edge.size();
+        datalen = imageSize.width * imageSize.height * 3;
+        packetSize = imageSize.width;
+        
+        do{
+            
+            while(currPos < datalen)            //send one image to config values on client side
+            {
+                if(currPos + packetSize > datalen)
+                    currPacket = datalen - currPos;
+                else
+                    currPacket = packetSize;
+                
+                send(new_socket, edges.data + currPos, currPacket, 0);
+                currPos += currPacket;
+            }
+        
+            read(new_socket, &key, sizeof(int),0);
+            if(waitKey(30) == 'z')
+                myMetrics.calibrateZero(&edges, dist);
+            if (waitKey(30) == 99)
+                myMetrics.configValues(&edges, dist);
+            
+        }while(key != 'q')
+            
+        myMetrics.writeMetrics(filename2);
         
     }
     

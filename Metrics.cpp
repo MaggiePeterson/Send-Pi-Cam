@@ -145,27 +145,24 @@ void Metrics:: writeMetrics(string textFile){
         myFile<< this->radiusX[i] <<endl<<  this->distY[i] << endl;
     }
     myFile.close();
-    
 }
 
 bool Metrics:: readMetrics(string textFile){
-    bool read = false;
+    
     ifstream inFile;
     inFile.open(textFile);
     int size;
-    inFile>> size;
-    radiusX.resize(size);
-    distY.resize(size);
-    
-    for(int i=0; i< size; i++){
-        if(inFile >> this->radiusX[i] >> this->distY[i]){
-            read =true;
+    if(inFile>> size){
+        radiusX.resize(size);
+        distY.resize(size);
+        for(int i=0; i< size; i++){
+            inFile >> this->radiusX[i] >> this->distY[i];
         }
+        return true;
     }
+    return false;
+}    
     
-    inFile.close();
-    return read;
-}
 
 
 

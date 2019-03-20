@@ -85,9 +85,9 @@ int main()
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
     
-    OpenVideo myVideo(1);
+    OpenVideo myVideo(0);
     cout << "Capture is opened" << endl;
-cout<<brita.readHSV(filename)<<endl;    
+    
     if (!brita.readHSV(filename))            //if HSV file is not created
     {
         image = myVideo.getImage();
@@ -124,16 +124,19 @@ cout<<brita.readHSV(filename)<<endl;
         brita.writeHSV(filename);
         
     }
-    
-    if(!myMetrics.readMetrics()){
+cout<<"here"<<endl;
+    bool readM = myMetrics.readMetrics(filename2);
+	cout<<"sending readM"<<send(new_socket, &readM, sizeof(bool),0)<<endl;;
+    if(!readM){
         image = myVideo.getImage();
         edges = brita.edgeDetect(&image);
-        imageSize = edge.size();
+        imageSize = edges.size();
         datalen = imageSize.width * imageSize.height * 3;
         packetSize = imageSize.width;
+	cout<<"cannot read readm"<<endl;
         
         do{
-            
+           cout<<"in Metrics while loop"<<endl; 
             while(currPos < datalen)            //send one image to config values on client side
             {
                 if(currPos + packetSize > datalen)
@@ -145,13 +148,13 @@ cout<<brita.readHSV(filename)<<endl;
                 currPos += currPacket;
             }
         
-            read(new_socket, &key, sizeof(int),0);
-            if(waitKey(30) == 'z')
+            read(new_socket, &key, sizeof(int));
+            if(key == 'z')
                 myMetrics.calibrateZero(&edges, dist);
-            if (waitKey(30) == 99)
+            if (key == 99)
                 myMetrics.configValues(&edges, dist);
             
-        }while(key != 'q')
+        }while(key != 'q');
             
         myMetrics.writeMetrics(filename2);
         

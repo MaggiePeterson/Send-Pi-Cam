@@ -74,12 +74,14 @@ int main()
     address.sin_port = htons( PORT ); 
 
     bind(server_fd, (struct sockaddr *)&address,sizeof(address));
-    
+   
+	cout<< "listening for host"; 
     if (listen(server_fd, 3) < 0) 
     { 
         perror("listen"); 
         exit(EXIT_FAILURE); 
     } 
+	cout<< "got host";
     if ((new_socket = accept(server_fd, (struct sockaddr *)&address,  
                        (socklen_t*)&addrlen))<0) 
     { 
@@ -94,6 +96,7 @@ int main()
     struct timeval currFrameTime,lastFrameTime;
     gettimeofday(&currFrameTime, NULL);
 
+	cout << "starting video";
     OpenVideo myVideo(0);
    
         cout << "Capture is opened" << endl;

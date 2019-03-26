@@ -46,5 +46,5 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_executable(opencv_cam_server ${SOURCES})
 
 # Link your application with OpenCV and libuvc libraries
-target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} ${CMAKE_THREAD_LIBS_INIT}mjjjmj /usr/local/lib/arm-linux-gnueabihf/libuvc.so)
+target_link_libraries(opencv_cam_server ${OpenCV_LIBS}  ${libuvc_LIBS} ${CMAKE_THREAD_LIBS_INIT} /usr/local/lib/arm-linux-gnueabihf/libuvc.so)
 

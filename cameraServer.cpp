@@ -5,6 +5,7 @@
 #include "opencv2/videoio.hpp"
 #include "OpenVideo.hpp"
 #include "OpenFilter.hpp"
+#include "Metrics.hpp"
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -30,7 +31,7 @@ int main()
     int angle;
     int dist;
     int key =  waitKey(100);
-    Mat edges;
+    Mat edges, image;
     Filter brita;
     Metrics myMetrics(1280,69);
     const string filename = "HSV.txt";                      //need to get this to save

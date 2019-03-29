@@ -86,7 +86,7 @@ while(waitKey(100) != 'q'){     //sends distance and angle
     oss<< angle <<" "<<dist;    //save data to string
     data = oss.str();
     
-    sendto(sock, data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+    sendto(sock, &data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
     
     }
     return 0;

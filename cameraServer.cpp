@@ -37,6 +37,7 @@ int main()
     const string filename = "HSV.txt";                      //need to get this to save
     const string filename2 = "Metrics.txt";
     ostringstream oss;
+    String data;
     
     //set up UDP
     int sock;                         /* Socket */
@@ -83,8 +84,9 @@ while(waitKey(100) != 'q'){     //sends distance and angle
     dist = myMetrics.distance();
     
     oss<< angle <<" "<<dist;    //save data to string
+    data = oss.str();
     
-    sendto(sock, oss, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+    sendto(sock, data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
     
     }
     return 0;

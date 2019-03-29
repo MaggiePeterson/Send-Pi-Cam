@@ -72,31 +72,6 @@ int main()
     cout << "Capture is opened" << endl;
     
     
-    do{
-        cout<<"in Metrics while loop"<<endl;
-        while(currPos < datalen)            //send one image to config values on client side
-        {
-            if(currPos + packetSize > datalen)
-                currPacket = datalen - currPos;
-            else
-                currPacket = packetSize;
-            
-            send(new_socket, edges.data + currPos, currPacket, 0);
-            currPos += currPacket;
-        }
-        
-        read(new_socket, &key, sizeof(int));
-        if(key == 'z')
-            myMetrics.calibrateZero(&edges, dist);
-        if (key == 99)
-            myMetrics.configValues(&edges, dist);
-        
-    }while(key != 'q');
-    
-    myMetrics.writeMetrics(filename2);
-    
-}
-
 while(waitKey(100) != 'q'){     //sends distance and angle
     cout<<"senidng metrics"<<endl;
     image = myVideo.getImage();

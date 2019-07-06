@@ -1,24 +1,12 @@
-#include "opencv2/core.hpp"
-#include "opencv2/core.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/videoio.hpp"
+//Maggie Peterson 2019
+
 #include "OpenVideo.hpp"
 #include "OpenFilter.hpp"
 #include "Metrics.hpp"
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <sstream>
-#include <iterator>
-#include <iostream>
-#include <unistd.h>
-#include <stdio.h>
 #include <sys/socket.h>
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <thread>
-#include <sstream>
 
 #define PORT 8888
 #define BCAST_PORT 9999
@@ -28,15 +16,17 @@ using namespace std;
 
 int main()
 {
-    int angle;
-    int dist;
-    int key =  waitKey(100);
-    Mat edges, image;
-    Filter brita;
-    Metrics myMetrics(1280,69);
-    const string filename = "HSV.txt";                      //need to get this to save
-    const string filename2 = "Metrics.txt";
-    ostringstream oss;
+
+    Mat* raw_img = new Mat;
+    Mat* target_img = new Mat;
+
+    Filter myFilter;
+    int frame_width = 600;
+    double FOV = 68.5;
+    Metrics myMetrics(frame_width, FOV);
+
+    const string HSV_file = "HSV.txt";
+    const string Metrics_file = "Metrics.txt";
     String data;
     
     //set up UDP
@@ -58,11 +48,6 @@ int main()
         perror("Could not set UDP permissions");
         exit(EXIT_FAILURE);
     }
-    /*    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &broadcastPermission, sizeof(broadcastPermission)) < 0)
-     {
-     perror("Could not reuse UDP port");
-     exit(EXIT_FAILURE);
-     }*/
     
     memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
     broadcastAddr.sin_family = AF_INET;                 /* Internet address family */
@@ -70,26 +55,22 @@ int main()
     broadcastAddr.sin_port = htons(BCAST_PORT);         /* Broadcast port */
     cout << "Starting beacon" << endl;
     
-    OpenVideo myVideo(0);
+    OpenVideo stream(0); //opens camera stream
     cout << "Capture is opened" << endl;
     
     
-while(waitKey(100) != 'q'){     //sends distance and angle
-    cout<<"senidng metrics"<<endl;
-    image = myVideo.getImage();
-    edges = brita.edgeDetect(&image);
-    
-    myMetrics.drawBoundingBox(&edges);
-    angle = myMetrics.angle();
-    dist = myMetrics.distance();
-    
-    oss<< angle <<" "<<dist;    //save data to string
-    data = oss.str();
-    
-    sendto(sock, &data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
-    
-    }
+   while(1){     //sends distance and angle
+
+       *raw_img = stream.getImage();
+       *target_img = myFilter.edgeDetect(raw_img);
+       myMetrics.TargetInit(target_img);
+       data = myMetrics.getAngleAndDistance();
+
+       sendto(sock, &data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+
+      }
+
     return 0;
-    
-    }
+
+}
     

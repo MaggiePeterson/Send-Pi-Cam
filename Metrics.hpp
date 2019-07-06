@@ -1,8 +1,8 @@
 //
 //  Metrics.hpp
-//  VisionProcessing2019
+//  Metrics
 //
-//  Created by Margaret Peterson on 1/14/19.
+//  Created by Margaret Peterson on 4/19/19.
 //  Copyright © 2019 Margaret Peterson. All rights reserved.
 //
 
@@ -21,32 +21,64 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string>
+#include <cmath>
+#include <sstream>
 
 using namespace std;
 using namespace cv;
 
+
 class Metrics{
+
 public:
-    Metrics(int frameWidth, int degree);
-    void drawBoundingBox(Mat *img);
-    void calibrateZero(Mat *img, float dist);
-    void configValues(Mat *img, float dist);
-    int angle();
-    float distance();
-    void writeMetrics(string textFile);
-    bool readMetrics(string filename);
-    
+
+   Metrics(int frameWidth, int degree);
+   void TargetInit(Mat *img);
+   void calibrateZero(Mat *img, double distance);
+   void configValues(Mat *img, double distance);
+   int getAngle();
+   double getDistance(int length);
+   void writeMetrics(string textFile);
+   bool readMetrics(string filename);
+   string getAngleAndDistance(); //returns in combined text
+
 private:
-    vector<float>radiusX;
-    vector<float>distY;
-    float lineOfRegression(float rad1, float rad2);
-    int frameW;
-    int FOV;
-    float zeroDist;
-    Mat imgAtZero;
-    int angl;
-    float radius1, radius2;
-    
+
+   struct VerticalLine {
+      int start = 0;
+      int end = 0;
+   };
+
+   struct HorizontalLine {
+      int start = 0;
+      int end = 0;
+   };
+
+   struct Target {
+      HorizontalLine y_line;
+      VerticalLine x_line;
+      int width = 0;
+      int height = 0;
+      double HW_Ratio = 0.0;
+   };
+
+   struct TargetPair {
+      Target target1;
+      Target target2;
+      int center = 0;
+      int length = 0;
+      static constexpr double TOLERANCE = 2;
+   };
+
+   vector<int>target_pair_length;
+   vector<double>distance;
+   vector<TargetPair>pair_list;
+   int findClosetTarget();
+   int findClosestTargetLength();
+   int frame_width;
+   double field_of_view;
+   double calibration;
+
 };
 
 #endif /* Metrics_hpp */

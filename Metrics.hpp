@@ -32,7 +32,7 @@ class Metrics{
 
 public:
 
-   Metrics(int frameWidth, int degree);
+   Metrics();
    void TargetInit(Mat *img);
    void calibrateZero(Mat *img, double distance);
    void configValues(Mat *img, double distance);
@@ -75,9 +75,10 @@ private:
    vector<TargetPair>pair_list;
    int findClosetTarget();
    int findClosestTargetLength();
-   int frame_width;
-   double field_of_view;
-   double calibration;
+   const int FRAME_WIDTH = 640;
+   const double FIELD_OF_VIEW  = 68.5;
+   const double DEG_PER_PIXEL = FIELD_OF_VIEW/FRAME_WIDTH;
+   double calibration = 0;
 
 };
 

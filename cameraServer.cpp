@@ -21,9 +21,7 @@ int main()
     Mat* target_img = new Mat;
 
     Filter myFilter;
-    int frame_width = 600;
-    double FOV = 68.5;
-    Metrics myMetrics(frame_width, FOV);
+    Metrics myMetrics;
             
     const string HSV_file = "HSV.txt";
     const string Metrics_file = "Metrics.txt";

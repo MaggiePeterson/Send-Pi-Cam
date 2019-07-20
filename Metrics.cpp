@@ -9,10 +9,7 @@
 #include "Metrics.hpp"
 
 //constructor
-Metrics::Metrics(int frameWidth, int FOV){
-   this->frame_width = frameWidth;
-   this->field_of_view = FOV;
-}
+Metrics::Metrics(){}
 
 void Metrics:: TargetInit(Mat *img){
 
@@ -166,7 +163,7 @@ int Metrics:: getAngle(){
 
    pair_list[index].center = (pair_list[index].target1.x_line.start + pair_list[index].target2.x_line.end)/2;
 
-   int angle = field_of_view * abs((frame_width/2) - pair_list[index].center)/frame_width;
+   int angle = DEG_PER_PIXEL * ((FRAME_WIDTH/2) - pair_list[index].center);
 
    return angle;
 }

@@ -4,12 +4,12 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/margaretpeterson/Desktop/raspiCamera/Metrics.cpp" "/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/opencv_cam_server.dir/Metrics.cpp.o"
-  "/Users/margaretpeterson/Desktop/raspiCamera/OpenFilter.cpp" "/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/opencv_cam_server.dir/OpenFilter.cpp.o"
-  "/Users/margaretpeterson/Desktop/raspiCamera/OpenVideo.cpp" "/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/opencv_cam_server.dir/OpenVideo.cpp.o"
-  "/Users/margaretpeterson/Desktop/raspiCamera/cameraServer.cpp" "/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/opencv_cam_server.dir/cameraServer.cpp.o"
+  "/home/pi/send-Pi-Cam/Metrics.cpp" "/home/pi/send-Pi-Cam/CMakeFiles/opencv_cam_server.dir/Metrics.cpp.o"
+  "/home/pi/send-Pi-Cam/OpenFilter.cpp" "/home/pi/send-Pi-Cam/CMakeFiles/opencv_cam_server.dir/OpenFilter.cpp.o"
+  "/home/pi/send-Pi-Cam/OpenVideo.cpp" "/home/pi/send-Pi-Cam/CMakeFiles/opencv_cam_server.dir/OpenVideo.cpp.o"
+  "/home/pi/send-Pi-Cam/cameraServer.cpp" "/home/pi/send-Pi-Cam/CMakeFiles/opencv_cam_server.dir/cameraServer.cpp.o"
   )
-set(CMAKE_CXX_COMPILER_ID "AppleClang")
+set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH

@@ -1,0 +1,3 @@
+/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/rebuild_cache.dir
+/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/edit_cache.dir
+/Users/margaretpeterson/Desktop/raspiCamera/CMakeFiles/opencv_cam_server.dir

@@ -69,14 +69,12 @@ void Metrics:: TargetInit(Mat *img){
 
       if((haswhite>=5) && !prevhaswhite){   //if current is white but prev is black
 
-         line(*img, Point(0, j), Point(640,j), Scalar(250,250,250),1, LINE_8, 0); //draw line
          prevhaswhite =1;
 
          y.start = j;
       }
       else if ((haswhite<=5) && prevhaswhite){
 
-         line(*img, Point(0, j), Point(640,j), Scalar(250,250,250),1, LINE_8, 0); //draw line
          prevhaswhite =0;
 
          y.end = j;

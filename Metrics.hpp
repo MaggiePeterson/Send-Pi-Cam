@@ -14,7 +14,6 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/videoio.hpp"
 #include <stdio.h>
-#include <numeric>
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -27,15 +26,12 @@
 using namespace std;
 using namespace cv;
 
-
 class Metrics{
 
 public:
 
-   Metrics();
+   Metrics(void);
    void TargetInit(Mat *img);
-   void calibrateZero(Mat *img, double distance);
-   void configValues(Mat *img, double distance);
    int getAngle();
    double getDistance(int length);
    void writeMetrics(string textFile);
@@ -43,7 +39,7 @@ public:
    string getAngleAndDistance(); //returns in combined text
 
 private:
-
+   //structs
    struct VerticalLine {
       int start = 0;
       int end = 0;
@@ -75,10 +71,12 @@ private:
    vector<TargetPair>pair_list;
    int findClosetTarget();
    int findClosestTargetLength();
+   void lineOfRegression();
+   double slope;
+   double yIntercept;
    const int FRAME_WIDTH = 640;
    const double FIELD_OF_VIEW  = 68.5;
    const double DEG_PER_PIXEL = FIELD_OF_VIEW/FRAME_WIDTH;
-   double calibration = 0;
 
 };
 

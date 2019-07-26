@@ -67,13 +67,11 @@ void Metrics:: TargetInit(Mat *img){
       if((haswhite>=5) && !prevhaswhite){   //if current is white but prev is black
 
          prevhaswhite =1;
-
          y.start = j;
       }
       else if ((haswhite<=5) && prevhaswhite){
 
          prevhaswhite =0;
-
          y.end = j;
          horizontal_lines.push_back(y);
          horizontal_lines.push_back(y);
@@ -100,6 +98,7 @@ void Metrics:: TargetInit(Mat *img){
       if(target_list[i].HW_Ratio - target_list[i+1].HW_Ratio <= TargetPair::TOLERANCE){
          pair.target1 =target_list[i]; //add target to pair
          pair.target2 =target_list[i+1];
+         pair.length = pair.target1.width + pair.target2.width;
          pair_list.push_back(pair);
 
          i++; //skip checking next target
@@ -111,20 +110,6 @@ void Metrics:: TargetInit(Mat *img){
       cout<<"ERROR: no pairs found"<<endl;
    }
 
-}
-
-void Metrics:: calibrateZero(Mat *img, double dist){
-
-   target_pair_length.push_back(pair_list[findClosetTarget()].length);
-   this->distance.push_back(dist);
-
-   calibration = dist;
-}
-
-void Metrics::configValues(Mat *img, double dist){
-
-   target_pair_length.push_back(pair_list[findClosetTarget()].length);
-   this->distance.push_back(dist);
 }
 
 int Metrics::findClosetTarget(){
@@ -150,10 +135,13 @@ int Metrics::findClosetTarget(){
 int Metrics::findClosestTargetLength(){
 
    int max = 0;
+
    for (TargetPair pair : pair_list){
-      if(pair.length > max)
+      if(pair.length > max){
          max = pair.length;
+      }
    }
+
    return max;
 }
 
@@ -168,31 +156,29 @@ int Metrics:: getAngle(){
    return angle;
 }
 
+void Metrics::lineOfRegression(){
+
+   if(target_pair_length.size() != distance.size())
+      cerr<< "ERROR: Vectors are not the same size"<<endl;
+
+   double n = target_pair_length.size();
+   double xsum = 0.0, x2sum = 0.0, ysum = 0.0, xysum = 0.0; //variables for sums/sigma of xi,yi,xi^2,xiyi etc
+
+   for (int i=0;i<n;i++)
+   {
+      xsum += target_pair_length[i];                        //calculate sigma(xi)
+      ysum += distance[i];                       //calculate sigma(yi)
+      x2sum += pow(target_pair_length[i],2);                //calculate sigma(x^2i)
+      xysum += target_pair_length[i]*distance[i];                    //calculate sigma(xi*yi)
+   }
+   this->slope = (n*xysum-xsum*ysum)/(n*x2sum-xsum*xsum);            //calculate slope
+   this->yIntercept = (x2sum*ysum-xsum*xysum)/(x2sum*n-xsum*xsum);            //calculate intercept
+}
+
 double Metrics::getDistance(int length){
 
-   if(target_pair_length.size() != distance.size()){
-      cerr<< "ERROR: Vectors are not the same size"<<endl;
-   }
-   double n = target_pair_length.size();
-
-   double avgX = accumulate(target_pair_length.begin(), target_pair_length.end(), 0.0) / n;
-   double avgY = accumulate(distance.begin(), distance.end(), 0.0) / n;
-
-   double numerator = 0.0;
-   double denominator = 0.0;
-
-   for(int i=0; i<n; ++i){
-      numerator += (target_pair_length[i] - avgX) * (target_pair_length[i] - avgY);
-      denominator += (target_pair_length[i] - avgX) * (target_pair_length[i] - avgX);
-   }
-
-   if(denominator==0){
-      cerr << "ERROR: Undefined slope"<<endl;
-   }
-
-   double slope = numerator / denominator;
-   double dist = slope*length + calibration;
-   return dist;
+   int distance = slope*length + yIntercept;
+   return distance;
 }
 
 string Metrics::getAngleAndDistance(){
@@ -222,14 +208,20 @@ bool Metrics:: readMetrics(string textFile){
    ifstream inFile;
    inFile.open(textFile);
    int size;
+
    if(inFile>> size){
+
       target_pair_length.resize(size);
       distance.resize(size);
+
       for(int i=0; i< size; i++){
          inFile >> target_pair_length[i] >> distance[i];
       }
+
+      lineOfRegression(); //calculate slope and yInt
       return true;
    }
+
    return false;
 }
 

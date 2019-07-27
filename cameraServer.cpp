@@ -8,15 +8,13 @@
 #include <netinet/in.h>
 #include <thread>
 
-#define PORT 8888
-#define BCAST_PORT 9999
+#define PORT 9999
 #define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
 
 int main()
 {
-
     Mat* raw_img = new Mat;
     Mat* target_img = new Mat;
 
@@ -30,12 +28,8 @@ int main()
     //set up UDP
     int sock;                         /* Socket */
     struct sockaddr_in broadcastAddr; /* Broadcast address */
-    char *broadcastIP;                /* IP broadcast address */
-    char *sendString;                 /* String to broadcast */
     int broadcastPermission = 1;          /* Socket opt to set permission to broadcast */
-    unsigned int sendStringLen;       /* Length of string to broadcast */
-    
-    cout << "bcast thread start" << endl;
+
     if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
     {
         perror("UDP socket failed");

@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <thread>
 
-#define PORT 9999
+#define PORT 5801
 #define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
@@ -44,7 +44,7 @@ int main()
     memset(&broadcastAddr, 0, sizeof(broadcastAddr));   /* Zero out structure */
     broadcastAddr.sin_family = AF_INET;                 /* Internet address family */
     broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;/* Broadcast IP address */
-    broadcastAddr.sin_port = htons(BCAST_PORT);         /* Broadcast port */
+    broadcastAddr.sin_port = htons(PORT);         /* Broadcast port */
     cout << "Starting beacon" << endl;
     
     OpenVideo stream(0); //opens camera stream

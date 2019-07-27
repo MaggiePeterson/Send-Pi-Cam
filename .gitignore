@@ -1,0 +1,7 @@
+CMakeCache.txt
+Makefile
+CMakeFiles/
+opencv_cam_client
+opencv_cam_server
+cmake_install.cmake
+

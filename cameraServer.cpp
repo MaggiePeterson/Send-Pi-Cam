@@ -8,8 +8,8 @@
 #include <netinet/in.h>
 #include <thread>
 
-#define PORT 8888
-#define BCAST_PORT 9999
+#define PORT 5801
+#define BCAST_PORT 5801
 #define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
@@ -63,8 +63,10 @@ int main()
        *target_img = myFilter.edgeDetect(raw_img);
        myMetrics.TargetInit(target_img);
        data = myMetrics.getAngleAndDistance();
-
-       sendto(sock, &data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+       
+       char cData[255]; 
+       strcpy(cData, data.c_str());
+       sendto(sock, &cData, sizeof(cData), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
 
       }
 

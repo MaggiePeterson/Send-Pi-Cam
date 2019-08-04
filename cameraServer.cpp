@@ -49,7 +49,10 @@ int main()
     
     OpenVideo stream(0); //opens camera stream
     cout << "Capture is opened" << endl;
-    
+
+	//read from files
+    myFilter.readHSV(HSV_file);
+    myMetrics.readMetrics(Metrics_file);    
     
    while(1){     //sends distance and angle
 
@@ -57,8 +60,12 @@ int main()
        *target_img = myFilter.edgeDetect(raw_img);
        myMetrics.TargetInit(target_img);
        data = myMetrics.getAngleAndDistance();
-
-       sendto(sock, &data, sizeof(string), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+	
+	imwrite("image.jpg", *target_img);
+     
+       char cData[255]; 
+       strcpy(cData, data.c_str());
+       sendto(sock, &cData, sizeof(cData), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));	
 
       }
 

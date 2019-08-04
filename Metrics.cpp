@@ -188,6 +188,7 @@ double Metrics::getDistance(int length){
 
    if(denominator==0){
       cerr << "ERROR: Undefined slope"<<endl;
+	denominator = 1;
    }
 
    double slope = numerator / denominator;

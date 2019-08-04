@@ -7,16 +7,16 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <thread>
-
-#define PORT 5801
-#define BCAST_PORT 5801
+#include <stdio.h>
+#define PORT 58010
+#define BCAST_PORT 58012
 #define BUFFER_SIZE 1*800*600
 using namespace cv;
 using namespace std;
 
 int main()
 {
-
+	cout <<__LINE__ << endl;
     Mat* raw_img = new Mat;
     Mat* target_img = new Mat;
 
@@ -55,13 +55,18 @@ int main()
     
     OpenVideo stream(0); //opens camera stream
     cout << "Capture is opened" << endl;
-    
-    
+    myFilter.readHSV(HSV_file);
+	myMetrics.readMetrics(Metrics_file);
+        cout <<__LINE__ << endl;
+
    while(1){     //sends distance and angle
 
        *raw_img = stream.getImage();
+	cout<<"image height: "<<raw_img->cols<<" width: "<<raw_img->rows<<endl;
+	cout<<"random pixel "<<(int)raw_img->data[67]<<endl;
        *target_img = myFilter.edgeDetect(raw_img);
        myMetrics.TargetInit(target_img);
+	imwrite("image.jpg", *target_img);
        data = myMetrics.getAngleAndDistance();
        
        char cData[255]; 

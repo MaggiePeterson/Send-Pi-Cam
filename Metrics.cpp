@@ -108,7 +108,10 @@ void Metrics:: TargetInit(Mat *img){
 
    if(pair_list.size() < 1){
       cout<<"ERROR: no pairs found"<<endl;
+      m_noTarget = true;
    }
+   else
+      m_noTarget = false;
 
 }
 
@@ -147,13 +150,17 @@ int Metrics::findClosestTargetLength(){
 
 int Metrics:: getAngle(){
 
+   if(!m_noTarget){
    int index = findClosetTarget();
 
    pair_list[index].center = (pair_list[index].target1.x_line.start + pair_list[index].target2.x_line.end)/2;
 
    int angle = DEG_PER_PIXEL * ((FRAME_WIDTH/2) - pair_list[index].center);
-
    return angle;
+   }
+   else 
+    return 0;
+   
 }
 
 void Metrics::lineOfRegression(){
@@ -177,8 +184,12 @@ void Metrics::lineOfRegression(){
 
 double Metrics::getDistance(int length){
 
+   if(!m_noTarget){
    int distance = slope*length + yIntercept;
    return distance;
+   }
+   else
+    return -1;
 }
 
 string Metrics::getAngleAndDistance(){

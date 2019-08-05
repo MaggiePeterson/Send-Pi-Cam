@@ -49,7 +49,7 @@ private:
       int start = 0;
       int end = 0;
    };
-
+ 
    struct Target {
       HorizontalLine y_line;
       VerticalLine x_line;
@@ -77,6 +77,7 @@ private:
    const int FRAME_WIDTH = 640;
    const double FIELD_OF_VIEW  = 68.5;
    const double DEG_PER_PIXEL = FIELD_OF_VIEW/FRAME_WIDTH;
+   bool m_noTarget;
 
 };
 

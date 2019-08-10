@@ -151,14 +151,19 @@ void Filter::hashThresh(Mat *img){
 // then uses Sobel for edge detection
 Mat Filter::edgeDetect(Mat *img)
 {
+   int startTime = clock();
    Mat img_hsv, stacked_img;
    cvtColor(*img, img_hsv, COLOR_BGR2HSV);
    hashThresh(&img_hsv);
+
+   cout<<"Processing time for hash method: "<<clock()- startTime<<endl;
 
    return img_hsv;
 }
 
 Mat Filter::edgeDetectConfig(Mat *img){
+
+   int startTime = clock();
 
    Mat temp_img, stacked_img, edge_img;
 
@@ -185,6 +190,8 @@ Mat Filter::edgeDetectConfig(Mat *img){
    convertScaleAbs(grad_x, abs_grad_x); // converting back to CV_8U
    convertScaleAbs(grad_y, abs_grad_y);
    addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0, stacked_img);
+
+   cout<<"Processing time for old edge detection: "<<clock() - startTime<<endl;
 
    return stacked_img;
 }

@@ -74,7 +74,7 @@ int main()
         *raw_img = stream.getImage();
         gettimeofday(&stop2,NULL);
 
-      myFilter.edgeDetectConfig(raw_img);
+Mat yuck =   myFilter.edgeDetectConfig(raw_img);
         *target_img = myFilter.edgeDetect(raw_img);
         gettimeofday(&stop3,NULL);
 
@@ -85,8 +85,9 @@ int main()
 //-----------------------------------------------
       /// Find contours
       int startTime = clock();
-      findContours(*target_img, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); //external
-
+      findContours(yuck, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); //external
+float radius1 =0, radius2 =0;
+float center1 =0, center2=0;
       // Approximate contours to polygons + get bounding rects and circles
       vector<vector<Point> > contours_poly( contours.size() );
       vector<Rect> boundRect( contours.size() );
@@ -98,6 +99,28 @@ int main()
          boundRect[i] = boundingRect( Mat(contours_poly[i]) );
          minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
       }
+
+    Mat drawing = Mat::zeros(yuck.size(), CV_8UC3 ); //
+    for( int i = 0; i< contours.size(); i++ )
+    {
+        Scalar color = Scalar( 233, 100,100 );
+        drawContours( drawing, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
+        rectangle( drawing, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0 );
+        circle( drawing, center[i], (int)radius[i], color, 2, 8, 0 );
+        
+        if (radius[i]> radius1)             //gets 2 largest radii
+        {
+            radius2 = radius1;
+            radius1 = radius[i];
+            center1 = center[i].x;
+        }
+        else if (radius[i] > radius2){
+            radius2 = radius[i];
+            center2 = center[i].x;
+        }
+        
+        
+}
 
       cout<<"Processing time for bounding box: "<<clock() - startTime<<endl;
 //-----------------------------------------------

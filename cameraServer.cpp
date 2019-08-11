@@ -75,6 +75,7 @@ int main()
       *target_img = myFilter.edgeDetect(raw_img);
       gettimeofday(&stop3,NULL);
 
+
       myMetrics.TargetInit(target_img);
       data = myMetrics.getAngleAndDistance();
       gettimeofday(&stop4,NULL);

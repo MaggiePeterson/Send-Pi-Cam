@@ -26,8 +26,6 @@ void Metrics:: TargetInit(Mat *img){
 
    pair_list.clear();
 
-   int timeStart = clock();
-
    //vertical
    for(int i =0; i < img->cols; i++){
 
@@ -107,8 +105,6 @@ void Metrics:: TargetInit(Mat *img){
 
       }
    }
-
-   cout<<"processing time for metrics::target pairing: "<<clock()-timeStart<<endl;
 
    if(pair_list.size() < 1){
       cout<<"ERROR: no pairs found"<<endl;

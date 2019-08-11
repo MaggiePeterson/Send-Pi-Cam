@@ -15,8 +15,6 @@
 #include "opencv2/highgui.hpp"
 #include <iostream>
 #include <fstream>
-#include <time.h>
-
 
 #define WINDOW_NAME "Setup"
 using namespace cv;

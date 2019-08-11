@@ -64,50 +64,26 @@ int main()
     float imgGetTime, edgeTime, metricsTime;
     gettimeofday(&startTime,NULL);
 
-   vector<vector<Point> > contours;
-   vector<Vec4i> hierarchy;
 
    while(1){     //sends distance and angle
     
-        gettimeofday(&stop1,NULL);
+      gettimeofday(&stop1,NULL);
        
-        *raw_img = stream.getImage();
-        gettimeofday(&stop2,NULL);
+      *raw_img = stream.getImage();
+      gettimeofday(&stop2,NULL);
 
-      myFilter.edgeDetectConfig(raw_img);
-        *target_img = myFilter.edgeDetect(raw_img);
-        gettimeofday(&stop3,NULL);
+      *target_img = myFilter.edgeDetect(raw_img);
+      gettimeofday(&stop3,NULL);
 
-       myMetrics.TargetInit(target_img);  
-//       data = myMetrics.getAngleAndDistance();
-       gettimeofday(&stop4,NULL);
+      myMetrics.TargetInit(target_img);
+      data = myMetrics.getAngleAndDistance();
+      gettimeofday(&stop4,NULL);
 
-//-----------------------------------------------
-      /// Find contours
-      int startTime = clock();
-      findContours(*target_img, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE); //external
-
-      // Approximate contours to polygons + get bounding rects and circles
-      vector<vector<Point> > contours_poly( contours.size() );
-      vector<Rect> boundRect( contours.size() );
-      vector<Point2f>center( contours.size() );
-      vector<float>radius( contours.size() );
-
-      for( int i = 0; i < contours.size(); i++ )
-      { approxPolyDP( Mat(contours[i]), contours_poly[i], 3, true );
-         boundRect[i] = boundingRect( Mat(contours_poly[i]) );
-         minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
-      }
-
-      cout<<"Processing time for bounding box: "<<clock() - startTime<<endl;
-//-----------------------------------------------
-
-
-/*       sendto(sock, data.c_str(), data.length(), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
-       gettimeofday(&realTime,NULL);
-       cout << ">Total Time: "<< procTime(stop1, realTime)<< endl << "-->Img Get Time: "<< procTime(stop1, stop2)<< endl  << 
-            "-->Img Thres Time: "<< procTime(stop2, stop3)<< endl  << "-->Metrics Time: " << procTime(stop3, stop4) <<endl <<
-            "-->Data:"<< data << endl;	*/
+      sendto(sock, data.c_str(), data.length(), 0, (struct sockaddr *)&broadcastAddr, sizeof(broadcastAddr));
+      gettimeofday(&realTime,NULL);
+      cout << ">Total Time: "<< procTime(stop1, realTime)<< endl << "-->Img Get Time: "<< procTime(stop1, stop2)<< endl  <<
+         "-->Img Thres Time: "<< procTime(stop2, stop3)<< endl  << "-->Metrics Time: " << procTime(stop3, stop4) <<endl <<
+         "-->Data:"<< data << endl;
 
       }
 
